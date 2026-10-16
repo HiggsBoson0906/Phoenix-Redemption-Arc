@@ -1,0 +1,177 @@
+// src/content/cs-fundamentals/oops/oa/encapsulationAbstraction.oa.ts
+
+import type { OAQuestion, OARevisionNotes } from "@/types";
+
+export const encapsulationAbstractionRevisionNotes: OARevisionNotes = {
+  quickRevision: [
+    "Encapsulation = bundling data + methods, restricting access via private/protected/public.",
+    "Abstraction = hiding implementation complexity, exposing only essential behavior.",
+    "Encapsulation is a mechanism (access modifiers); abstraction is a design principle (interfaces/abstract classes).",
+    "Java visibility order (most to least restrictive): private < default(package) < protected < public.",
+  ],
+  importantFacts: [
+    "`protected` members are accessible within the same package AND from subclasses even in different packages.",
+    "Default (no modifier) access in Java is package-private — accessible only within the same package, subclass or not.",
+    "A getter/setter with zero validation logic provides encapsulation's syntax but not its real protective benefit.",
+    "Python has no compiler-enforced private; `_name` is a convention, `__name` triggers name-mangling but is still accessible.",
+  ],
+  memoryTricks: [
+    "'Encapsulation protects state, Abstraction simplifies interface' — state vs interface is the key split.",
+    "Visibility ladder: private → default → protected → public, each strictly widening the accessible scope.",
+  ],
+};
+
+export const encapsulationAbstractionOAQuestions: OAQuestion[] = [
+  {
+    id: "encapsulation-abstraction-oa-1",
+    question: "Which best describes the core difference between encapsulation and abstraction?",
+    options: [
+      "They are synonyms and can be used interchangeably",
+      "Encapsulation hides data via access control; abstraction hides implementation complexity via a simplified interface",
+      "Abstraction is only possible in interfaces; encapsulation is only possible in classes",
+      "Encapsulation applies only to methods, abstraction only to fields",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Encapsulation is a mechanism restricting direct access to data; abstraction is a design principle exposing only essential behavior while hiding complexity.",
+    difficulty: "Easy",
+    topicTags: ["concept"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-2",
+    question: "In Java, which access modifier allows access from subclasses in a different package but NOT from unrelated classes in that different package?",
+    options: ["private", "default (no modifier)", "protected", "public"],
+    correctAnswerIndex: 2,
+    explanation: "`protected` grants access within the same package plus subclasses anywhere, even in other packages — unrelated classes in another package still cannot access it.",
+    difficulty: "Medium",
+    topicTags: ["access modifiers"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-3",
+    question:
+      "Predict the output:\n\nclass Account {\n  private double balance = 100;\n  void setBalance(double b) {\n    if (b >= 0) balance = b;\n  }\n  double getBalance() { return balance; }\n}\npublic class Main {\n  public static void main(String[] args) {\n    Account a = new Account();\n    a.setBalance(-50);\n    System.out.println(a.getBalance());\n  }\n}",
+    options: ["-50.0", "0.0", "100.0", "Compile-time error"],
+    correctAnswerIndex: 2,
+    explanation: "setBalance validates that b >= 0 before assigning; -50 fails that check, so balance is never overwritten and stays at its initial value of 100. Output: 100.0.",
+    difficulty: "Medium",
+    topicTags: ["encapsulation", "puzzle"],
+    companyStyle: "Infosys",
+  },
+  {
+    id: "encapsulation-abstraction-oa-4",
+    question: "Which of the following is the best real-world example of abstraction rather than encapsulation?",
+    options: [
+      "Marking a class field `private` so it can't be modified directly",
+      "A car's steering wheel and pedals letting a driver operate the car without knowing engine internals",
+      "Using a getter method to return a private field's value",
+      "Declaring a constructor to initialize private fields",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Abstraction is about exposing a simple, essential interface (steering wheel, pedals) while hiding complex internals (engine, transmission) — the other options describe access-control mechanics (encapsulation).",
+    difficulty: "Easy",
+    topicTags: ["abstraction"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-5",
+    question: "What is the main weakness of a getter/setter pair that simply mirrors a private field with no validation logic?",
+    options: [
+      "It causes a compile-time error",
+      "It provides encapsulation's syntax but none of its real protective/abstraction benefit",
+      "It makes the field public automatically",
+      "It prevents the class from being instantiated",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "A pass-through getter/setter with no validation or logic adds boilerplate without enforcing any invariant, so it doesn't meaningfully protect state or hide any complexity.",
+    difficulty: "Medium",
+    topicTags: ["encapsulation", "design"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-6",
+    question: "Which Java access modifier restricts a member to be accessible only within the same class?",
+    options: ["public", "protected", "private", "default"],
+    correctAnswerIndex: 2,
+    explanation: "`private` is the most restrictive modifier — accessible only within the declaring class itself, not even subclasses.",
+    difficulty: "Easy",
+    topicTags: ["access modifiers"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-7",
+    question: "How does Python typically signal that a field is 'private' by convention, given it has no enforced access modifiers?",
+    options: [
+      "By using the `private` keyword",
+      "By prefixing the field name with an underscore, e.g. `_balance`",
+      "By declaring the field inside a separate module",
+      "Python fields are always private by default",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Python relies on naming conventions (`_name` for 'protected-by-convention', `__name` for name-mangled) rather than compiler-enforced private access.",
+    difficulty: "Medium",
+    topicTags: ["python", "encapsulation"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-8",
+    question:
+      "Predict the output:\n\nclass Wallet {\n  private int[] amounts = {10, 20, 30};\n  int[] getAmounts() { return amounts; }\n}\npublic class Main {\n  public static void main(String[] args) {\n    Wallet w = new Wallet();\n    int[] arr = w.getAmounts();\n    arr[0] = 999;\n    System.out.println(w.getAmounts()[0]);\n  }\n}",
+    options: ["10", "999", "0", "Compile-time error"],
+    correctAnswerIndex: 1,
+    explanation: "getAmounts() returns a reference to the same internal array object (arrays are reference types in Java), not a copy. Modifying arr[0] through that returned reference mutates the same backing array, so the encapsulation is broken and the internal state changes to 999.",
+    difficulty: "Hard",
+    topicTags: ["encapsulation", "puzzle", "leaky abstraction"],
+    companyStyle: "Amazon OA",
+  },
+  {
+    id: "encapsulation-abstraction-oa-9",
+    question: "Which pair correctly matches the mechanism used to achieve each concept?",
+    options: [
+      "Encapsulation via interfaces; abstraction via access modifiers",
+      "Encapsulation via access modifiers; abstraction via abstract classes/interfaces",
+      "Both are achieved exclusively via inheritance",
+      "Neither requires any specific language feature",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Encapsulation is enforced mechanically through access modifiers (private/protected/public); abstraction is most concretely realized through abstract classes and interfaces defining an essential contract.",
+    difficulty: "Medium",
+    topicTags: ["concept"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-10",
+    question: "Can a class exhibit encapsulation without meaningful abstraction?",
+    options: [
+      "No, they always occur together",
+      "Yes — e.g. all-private fields with plain pass-through getters/setters restrict access but add no real hidden-complexity benefit",
+      "No, encapsulation is impossible without an interface",
+      "Yes, but only in statically typed languages",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "A class can have strict access control (encapsulation) while still exposing its internal structure almost one-to-one through trivial getters/setters, providing little to no real abstraction.",
+    difficulty: "Hard",
+    topicTags: ["concept", "design"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-11",
+    question: "What is 'default' (package-private) access in Java?",
+    options: [
+      "Accessible from anywhere in the program",
+      "Accessible only within the same class",
+      "Accessible within the same package only, regardless of subclassing",
+      "Accessible only from subclasses in any package",
+    ],
+    correctAnswerIndex: 2,
+    explanation: "When no access modifier is specified, Java applies package-private (default) access — visible to any class in the same package, but not to subclasses in other packages.",
+    difficulty: "Medium",
+    topicTags: ["access modifiers"],
+  },
+  {
+    id: "encapsulation-abstraction-oa-12",
+    question: "Why is returning a direct reference to a private mutable field (like an array or List) from a getter considered a design flaw?",
+    options: [
+      "It causes a NullPointerException",
+      "It breaks encapsulation by letting external code mutate the object's internal state without going through validation",
+      "It is not allowed by the Java compiler",
+      "It has no real drawback",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Returning a live reference to internal mutable state lets any external caller bypass all of the class's own validation/invariant logic, defeating the purpose of marking the field private in the first place; a defensive copy should be returned instead.",
+    difficulty: "Hard",
+    topicTags: ["encapsulation", "design flaw"],
+  },
+];

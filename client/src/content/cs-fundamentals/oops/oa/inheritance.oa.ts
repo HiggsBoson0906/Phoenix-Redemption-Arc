@@ -1,0 +1,182 @@
+// src/content/cs-fundamentals/oops/oa/inheritance.oa.ts
+
+import type { OAQuestion, OARevisionNotes } from "@/types";
+
+export const inheritanceRevisionNotes: OARevisionNotes = {
+  quickRevision: [
+    "Inheritance models 'is-a'; a subclass reuses and extends a superclass's fields/methods.",
+    "Types: single, multilevel (chain), hierarchical (multiple siblings from one parent), multiple (one class, several parents).",
+    "The parent's constructor always runs before the child's constructor body — implicitly or via explicit `super(...)`.",
+    "Diamond problem: ambiguity when a class inherits the same ancestor member through two different paths.",
+  ],
+  importantFacts: [
+    "Java disallows multiple inheritance of classes entirely, but a class can implement multiple interfaces.",
+    "C++ allows multiple inheritance of classes and resolves the diamond problem via `virtual` inheritance.",
+    "If two implemented interfaces provide conflicting `default` methods, Java forces the implementing class to override and resolve the conflict explicitly — it will not compile otherwise.",
+    "Field access is resolved by the reference's compile-time (static) type; overridden method calls are resolved by the object's runtime type.",
+  ],
+  memoryTricks: [
+    "'Fields hide, methods override' — that's why the same code can print different things for `obj.field` vs `obj.method()`.",
+    "Diamond problem shape: A on top, B and C in the middle (both extend A), D at the bottom (extends both B and C) — hence 'diamond'.",
+  ],
+};
+
+export const inheritanceOAQuestions: OAQuestion[] = [
+  {
+    id: "inheritance-oa-1",
+    question: "Which relationship does inheritance model between a subclass and its superclass?",
+    options: ["has-a", "is-a", "uses-a", "depends-on"],
+    correctAnswerIndex: 1,
+    explanation: "Inheritance models an 'is-a' relationship — a Dog is-a Animal — as opposed to composition, which models 'has-a'.",
+    difficulty: "Easy",
+    topicTags: ["basics"],
+  },
+  {
+    id: "inheritance-oa-2",
+    question: "Why does Java not allow a class to extend more than one class?",
+    options: [
+      "Java classes cannot have any superclass",
+      "To avoid the ambiguity of the diamond problem for inherited state",
+      "Java doesn't support inheritance at all",
+      "Because interfaces already provide state inheritance",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Java disallows multiple class inheritance specifically to avoid diamond-problem ambiguity over which parent's state/method implementation a subclass should inherit.",
+    difficulty: "Medium",
+    topicTags: ["diamond problem"],
+  },
+  {
+    id: "inheritance-oa-3",
+    question:
+      "Predict the output:\n\nclass Base {\n  Base(String s) { System.out.println(\"Base: \" + s); }\n}\nclass Derived extends Base {\n  Derived() {\n    super(\"hello\");\n    System.out.println(\"Derived constructor\");\n  }\n}\npublic class Main {\n  public static void main(String[] args) {\n    new Derived();\n  }\n}",
+    options: [
+      "Derived constructor\\nBase: hello",
+      "Base: hello\\nDerived constructor",
+      "Base: hello",
+      "Compile-time error",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "super(\"hello\") explicitly invokes the parent constructor first, printing 'Base: hello', and only after it completes does the rest of the Derived constructor body run, printing 'Derived constructor'. Verified by execution.",
+    difficulty: "Medium",
+    topicTags: ["constructors", "puzzle"],
+    companyStyle: "TCS NQT",
+  },
+  {
+    id: "inheritance-oa-4",
+    question:
+      "Predict the output:\n\nclass Animal {\n  String name = \"Animal\";\n  void speak() { System.out.println(\"Animal speaks\"); }\n}\nclass Dog extends Animal {\n  String name = \"Dog\";\n  @Override\n  void speak() { System.out.println(\"Dog barks\"); }\n}\npublic class Main {\n  public static void main(String[] args) {\n    Animal a = new Dog();\n    System.out.println(a.name);\n    a.speak();\n  }\n}",
+    options: [
+      "Dog\\nDog barks",
+      "Animal\\nDog barks",
+      "Animal\\nAnimal speaks",
+      "Dog\\nAnimal speaks",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Fields are resolved using the reference's compile-time type (Animal), so `a.name` prints 'Animal' even though the object is a Dog — fields are hidden, not overridden. Methods, however, use dynamic dispatch based on the runtime type, so a.speak() correctly resolves to Dog's overridden version, printing 'Dog barks'. Verified by execution.",
+    difficulty: "Hard",
+    topicTags: ["field hiding", "method overriding", "puzzle"],
+    companyStyle: "Amazon OA",
+  },
+  {
+    id: "inheritance-oa-5",
+    question: "In the classic diamond problem, class D inherits from both B and C, which both inherit from a common class A. What is the core ambiguity?",
+    options: [
+      "D cannot be instantiated at all",
+      "It's unclear which version of A's member (via B's path or C's path) D should use",
+      "A cannot have any subclasses",
+      "B and C cannot both exist in the same program",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "The ambiguity is about which inherited copy/version of A's member D should use — the one reached through B, or the one reached through C — since both paths lead back to A.",
+    difficulty: "Medium",
+    topicTags: ["diamond problem"],
+  },
+  {
+    id: "inheritance-oa-6",
+    question: "How does C++ resolve the diamond problem while still allowing multiple inheritance?",
+    options: [
+      "By banning multiple inheritance entirely",
+      "Via `virtual` inheritance, ensuring only one shared copy of the common base class exists",
+      "By requiring all base classes to be abstract",
+      "C++ does not have a diamond problem",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Declaring the intermediate classes with `virtual` inheritance (e.g. `class B : public virtual A`) makes the compiler share a single subobject of A across B and C, eliminating both the duplication and the ambiguity.",
+    difficulty: "Hard",
+    topicTags: ["diamond problem", "C++"],
+  },
+  {
+    id: "inheritance-oa-7",
+    question: "What happens if two interfaces implemented by the same Java class both provide a conflicting `default` method with the same signature?",
+    options: [
+      "Java picks the first interface listed automatically",
+      "The implementing class must override the method itself to resolve the conflict, or it fails to compile",
+      "Both default methods run in sequence",
+      "Java silently ignores both default methods",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Java refuses to guess which default method should apply; the implementing class is required to explicitly override the method (optionally delegating to InterfaceName.super.method()) to resolve the ambiguity.",
+    difficulty: "Hard",
+    topicTags: ["interfaces", "default methods", "diamond problem"],
+  },
+  {
+    id: "inheritance-oa-8",
+    question: "Which type of inheritance describes 'Manager extends Employee extends Person'?",
+    options: ["Hierarchical", "Multilevel", "Multiple", "Hybrid"],
+    correctAnswerIndex: 1,
+    explanation: "This is a chain of inheritance (a grandparent-parent-child relationship), which is the definition of multilevel inheritance.",
+    difficulty: "Easy",
+    topicTags: ["types of inheritance"],
+  },
+  {
+    id: "inheritance-oa-9",
+    question: "Which type of inheritance describes 'Dog extends Animal' and 'Cat extends Animal' existing simultaneously?",
+    options: ["Multilevel", "Hierarchical", "Multiple", "Single"],
+    correctAnswerIndex: 1,
+    explanation: "Multiple sibling subclasses (Dog, Cat) extending the same single superclass (Animal) is hierarchical inheritance.",
+    difficulty: "Easy",
+    topicTags: ["types of inheritance"],
+  },
+  {
+    id: "inheritance-oa-10",
+    question: "What is the 'fragile base class problem'?",
+    options: [
+      "A base class that cannot be instantiated",
+      "Seemingly safe changes to a base class's internals silently breaking subclass behavior that depended on those internals",
+      "A base class with too many fields",
+      "A subclass that overrides too many methods",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Because subclasses can depend on a superclass's implementation details (not just its public contract), internal changes to the superclass can break subclasses in ways the compiler doesn't flag — this tight coupling is the fragile base class problem.",
+    difficulty: "Medium",
+    topicTags: ["inheritance pitfalls"],
+  },
+  {
+    id: "inheritance-oa-11",
+    question: "What does calling `super.methodName()` inside an overriding method do?",
+    options: [
+      "Calls the overriding method itself recursively",
+      "Invokes the immediate superclass's version of that method",
+      "Throws a runtime exception",
+      "Creates a new instance of the superclass",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "`super.methodName()` explicitly calls the parent class's implementation of a method the subclass has overridden, often used to extend rather than fully replace inherited behavior.",
+    difficulty: "Easy",
+    topicTags: ["super keyword"],
+  },
+  {
+    id: "inheritance-oa-12",
+    question: "Why is 'favor composition over inheritance' commonly recommended as a design guideline?",
+    options: [
+      "Because inheritance is deprecated in modern languages",
+      "Composition avoids the tight coupling and fragile base class issues that come from exposing a superclass's implementation to every subclass",
+      "Because composition is always faster at runtime",
+      "Because interfaces cannot be used with inheritance",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Composition ('has-a', delegating to a contained object) keeps components loosely coupled and swappable, avoiding the tight, implementation-level coupling and fragile base class risks inherent to deep inheritance ('is-a') hierarchies.",
+    difficulty: "Medium",
+    topicTags: ["composition vs inheritance", "design"],
+  },
+];

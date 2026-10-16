@@ -1,0 +1,191 @@
+// src/content/cs-fundamentals/dbms/oa/sqlJoinsQueries.oa.ts
+
+import type { OAQuestion, OARevisionNotes } from "@/types";
+
+export const sqlJoinsQueriesRevisionNotes: OARevisionNotes = {
+  quickRevision: [
+    "INNER JOIN: only matched rows from both tables.",
+    "LEFT JOIN: all rows from the left table, NULLs on the right where unmatched.",
+    "RIGHT JOIN: all rows from the right table, NULLs on the left where unmatched.",
+    "FULL OUTER JOIN: all rows from both tables, NULLs on whichever side lacks a match.",
+    "CROSS JOIN: Cartesian product, |A| x |B| rows, no join condition.",
+  ],
+  importantFacts: [
+    "WHERE filters rows before GROUP BY; HAVING filters groups after aggregation.",
+    "A right-table filter placed in WHERE (instead of ON) turns a LEFT JOIN into effectively an INNER JOIN for that condition.",
+    "Every non-aggregated column in SELECT must appear in GROUP BY.",
+    "EXISTS typically outperforms IN for large subqueries since it can short-circuit on the first match.",
+    "'LEFT JOIN + WHERE right.key IS NULL' is the standard idiom for finding rows in the left table with no match in the right table.",
+  ],
+  memoryTricks: [
+    "'JOIN order of execution: FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY' — remember filtering happens before grouping, and HAVING happens after.",
+    "LEFT JOIN keeps the 'left' table whole — think of LEFT as the side that never loses rows.",
+  ],
+};
+
+export const sqlJoinsQueriesOAQuestions: OAQuestion[] = [
+  {
+    id: "sql-joins-queries-oa-1",
+    question:
+      "Given:\nEmployees(EmpID, Name, DeptID): (1, Alice, 10), (2, Bob, 20), (3, Carol, NULL)\nDepartments(DeptID, DeptName): (10, Engineering), (20, Sales), (30, Marketing)\n\nWhat rows does 'SELECT Name, DeptName FROM Employees LEFT JOIN Departments ON Employees.DeptID = Departments.DeptID' return?",
+    options: [
+      "(Alice, Engineering), (Bob, Sales) only",
+      "(Alice, Engineering), (Bob, Sales), (Carol, NULL)",
+      "(Alice, Engineering), (Bob, Sales), (Carol, NULL), (NULL, Marketing)",
+      "All 9 combinations of employees and departments",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "LEFT JOIN keeps every row from Employees (the left table). Carol's DeptID is NULL so it matches nothing, giving NULL for DeptName. Marketing (DeptID 30) has no matching employee and does not appear, since LEFT JOIN doesn't add unmatched right-side rows.",
+    difficulty: "Medium",
+    topicTags: ["left join", "sample table"],
+    companyStyle: "Amazon OA",
+  },
+  {
+    id: "sql-joins-queries-oa-2",
+    question:
+      "Using the same Employees and Departments tables as above, what does 'SELECT Name, DeptName FROM Employees INNER JOIN Departments ON Employees.DeptID = Departments.DeptID' return?",
+    options: [
+      "(Alice, Engineering), (Bob, Sales)",
+      "(Alice, Engineering), (Bob, Sales), (Carol, NULL)",
+      "All 3 employees and all 3 departments listed separately",
+      "An empty result set",
+    ],
+    correctAnswerIndex: 0,
+    explanation: "INNER JOIN returns only rows with a match on both sides. Carol's NULL DeptID matches nothing (NULL never equals anything, including another NULL), so she's excluded, and Marketing has no matching employee.",
+    difficulty: "Easy",
+    topicTags: ["inner join", "sample table"],
+  },
+  {
+    id: "sql-joins-queries-oa-3",
+    question: "What is the main difference between WHERE and HAVING?",
+    options: [
+      "WHERE and HAVING are functionally identical",
+      "WHERE filters individual rows before grouping; HAVING filters groups after aggregation",
+      "HAVING filters rows before grouping; WHERE filters after",
+      "WHERE can only be used with SELECT *",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "WHERE operates on raw rows before GROUP BY runs, so it cannot reference aggregate functions; HAVING operates on the grouped/aggregated result and is used to filter based on aggregate values like COUNT or SUM.",
+    difficulty: "Easy",
+    topicTags: ["where", "having"],
+  },
+  {
+    id: "sql-joins-queries-oa-4",
+    question: "Which query correctly finds all customers who have never placed an order, given Customer(id, name) and Orders(id, customerId)?",
+    options: [
+      "SELECT c.* FROM Customer c INNER JOIN Orders o ON c.id = o.customerId WHERE o.id IS NULL",
+      "SELECT c.* FROM Customer c LEFT JOIN Orders o ON c.id = o.customerId WHERE o.id IS NULL",
+      "SELECT c.* FROM Customer c, Orders o WHERE c.id = o.customerId",
+      "SELECT c.* FROM Customer c RIGHT JOIN Orders o ON c.id = o.customerId",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "LEFT JOIN keeps every customer even without a matching order (giving NULL order columns); filtering WHERE o.id IS NULL then isolates exactly the customers with zero matching orders. INNER JOIN would exclude these customers entirely.",
+    difficulty: "Medium",
+    topicTags: ["left join", "anti-join"],
+  },
+  {
+    id: "sql-joins-queries-oa-5",
+    question: "What does a CROSS JOIN between a table with 4 rows and a table with 3 rows produce?",
+    options: ["7 rows", "12 rows", "1 row", "It requires an ON clause and cannot run without one"],
+    correctAnswerIndex: 1,
+    explanation: "CROSS JOIN produces the Cartesian product: every row of the first table paired with every row of the second, so 4 x 3 = 12 rows. No join condition is needed or used.",
+    difficulty: "Easy",
+    topicTags: ["cross join"],
+  },
+  {
+    id: "sql-joins-queries-oa-6",
+    question: "In a query with GROUP BY deptId, which SELECT list is valid?",
+    options: [
+      "SELECT deptId, name, COUNT(*) FROM Employee GROUP BY deptId",
+      "SELECT deptId, COUNT(*) FROM Employee GROUP BY deptId",
+      "SELECT name, AVG(salary) FROM Employee GROUP BY deptId",
+      "SELECT * FROM Employee GROUP BY deptId",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Every selected column that isn't wrapped in an aggregate function must appear in the GROUP BY clause. Only option B has just deptId (grouped) and COUNT(*) (aggregate); the others select ungrouped, non-aggregated columns like name.",
+    difficulty: "Medium",
+    topicTags: ["group by"],
+  },
+  {
+    id: "sql-joins-queries-oa-7",
+    question: "What is a self join used for?",
+    options: [
+      "Joining a table to a completely unrelated table",
+      "Joining a table to itself, typically to compare rows within the same table (e.g. employee to their manager)",
+      "A join that requires no ON condition",
+      "A join that only works on single-column primary keys",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "A self join uses two aliases of the same table to compare rows against each other within that table — the classic example is matching each employee to their manager, both stored in the same Employee table.",
+    difficulty: "Easy",
+    topicTags: ["self join"],
+  },
+  {
+    id: "sql-joins-queries-oa-8",
+    question: "Which query correctly finds the FULL OUTER JOIN equivalent in a database engine that doesn't support FULL OUTER JOIN directly (e.g. older MySQL)?",
+    options: [
+      "A plain INNER JOIN",
+      "LEFT JOIN UNION RIGHT JOIN",
+      "LEFT JOIN UNION (or UNION ALL with dedup) RIGHT JOIN, combining both directions",
+      "CROSS JOIN with a WHERE clause",
+    ],
+    correctAnswerIndex: 2,
+    explanation: "FULL OUTER JOIN can be simulated as the union of a LEFT JOIN result and a RIGHT JOIN result (using UNION to avoid duplicating the matched rows present in both), covering unmatched rows from both sides.",
+    difficulty: "Hard",
+    topicTags: ["full outer join", "workaround"],
+  },
+  {
+    id: "sql-joins-queries-oa-9",
+    question: "What is the key difference between using IN with a subquery versus EXISTS with a correlated subquery for a large subquery result set?",
+    options: [
+      "They always perform identically",
+      "EXISTS can short-circuit on the first matching row, often outperforming IN which may need to evaluate/materialize the full subquery result",
+      "IN always short-circuits, EXISTS never does",
+      "EXISTS cannot be used with correlated subqueries",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "EXISTS stops as soon as it finds one matching row, which is typically more efficient for large or complex correlated subqueries, whereas IN traditionally needs the full subquery result set to check membership against.",
+    difficulty: "Hard",
+    topicTags: ["exists", "in", "subquery"],
+    companyStyle: "Google-style",
+  },
+  {
+    id: "sql-joins-queries-oa-10",
+    question: "Consider Employees(EmpID, Name, Salary, ManagerID) where ManagerID references another EmpID in the same table. Which query lists each employee alongside their manager's name, including employees with no manager (e.g. the CEO)?",
+    options: [
+      "SELECT e.name, m.name FROM Employees e INNER JOIN Employees m ON e.ManagerID = m.EmpID",
+      "SELECT e.name, m.name FROM Employees e LEFT JOIN Employees m ON e.ManagerID = m.EmpID",
+      "SELECT e.name, m.name FROM Employees e, Employees m WHERE e.ManagerID = m.EmpID",
+      "SELECT e.name FROM Employees e WHERE e.ManagerID IS NOT NULL",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "A LEFT self join keeps every employee row even when ManagerID is NULL (no manager); an INNER JOIN would silently exclude employees with no manager, like the CEO.",
+    difficulty: "Medium",
+    topicTags: ["self join", "left join"],
+  },
+  {
+    id: "sql-joins-queries-oa-11",
+    question: "What is the correct logical order of SQL clause evaluation (not the written syntax order)?",
+    options: [
+      "SELECT -> FROM -> WHERE -> GROUP BY -> HAVING -> ORDER BY",
+      "FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY",
+      "FROM -> SELECT -> WHERE -> GROUP BY -> HAVING -> ORDER BY",
+      "WHERE -> FROM -> SELECT -> GROUP BY -> HAVING -> ORDER BY",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "SQL is written as SELECT...FROM...WHERE but logically executes FROM/JOIN first, then WHERE, then GROUP BY, then HAVING, then SELECT, then ORDER BY — which explains why SELECT aliases usually aren't usable in WHERE but are usable in ORDER BY.",
+    difficulty: "Medium",
+    topicTags: ["query execution order"],
+  },
+  {
+    id: "sql-joins-queries-oa-12",
+    question:
+      "Given Employees(EmpID, DeptID) with rows (1,10), (2,10), (3,20) and Departments(DeptID, DeptName) with rows (10,'Eng'), (20,'Sales'), (30,'HR'), how many rows does 'SELECT * FROM Employees FULL OUTER JOIN Departments ON Employees.DeptID = Departments.DeptID' return?",
+    options: ["3", "4", "6", "9"],
+    correctAnswerIndex: 1,
+    explanation: "Matched rows: (Emp1,Eng), (Emp2,Eng), (Emp3,Sales) = 3 rows. Unmatched right-side row: HR (DeptID 30) with no matching employee = 1 more row with NULL employee columns. Total = 4 rows.",
+    difficulty: "Hard",
+    topicTags: ["full outer join", "sample table"],
+    companyStyle: "TCS NQT",
+  },
+];

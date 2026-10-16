@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth.js';
+import { useTheme } from '../../context/ThemeContext.jsx';
 import * as authService from '../../services/authService.js';
 import {
   User,
@@ -14,7 +15,10 @@ import {
   EyeOff,
   Mail,
   Shield,
-  Key
+  Key,
+  Sun,
+  Moon,
+  Terminal
 } from 'lucide-react';
 import './Settings.css';
 
@@ -282,6 +286,7 @@ const PROVIDER_BADGE = {
 const Settings = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
+  const { theme, setTheme, isDark } = useTheme();
   const [passwordSet, setPasswordSet] = useState(false);
 
   const authProvider = user?.authProvider || 'local';
@@ -309,9 +314,9 @@ const Settings = () => {
             <span>Phoenix Odyssey</span>
           </Link>
 
-          <button onClick={() => navigate('/questions')} className="settings-back-btn">
+          <button onClick={() => navigate('/dsa')} className="settings-back-btn">
             <ArrowLeft size={16} />
-            <span>Back to Question Set</span>
+            <span>Back to Problem Sheets</span>
           </button>
         </div>
       </header>
@@ -320,7 +325,7 @@ const Settings = () => {
       <main className="settings-container">
         <div className="settings-title-section">
           <h1>Account Settings</h1>
-          <p>Manage your profile and account security settings.</p>
+          <p>Manage your profile, theme preference, and account security settings.</p>
         </div>
 
         {/* ── Profile Information ── */}
@@ -350,6 +355,98 @@ const Settings = () => {
                   <span>{badge.label}</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Appearance & Theme ── */}
+        <div className="settings-card">
+          <div className="settings-card-header">
+            <div className="settings-card-header-icon">
+              <Terminal size={18} />
+            </div>
+            <h2>Appearance & Theme</h2>
+          </div>
+          <div className="settings-card-body">
+            <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--text-dim)' }}>
+              Choose your interface style. Dark mode features a pitch black (#000000) Git Bash terminal theme.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
+              <button
+                type="button"
+                onClick={() => setTheme('dark')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '14px 16px',
+                  borderRadius: 10,
+                  cursor: 'pointer',
+                  background: isDark ? 'var(--panel-active)' : 'var(--panel)',
+                  border: `2px solid ${isDark ? 'var(--accent)' : 'var(--line)'}`,
+                  color: 'var(--text)',
+                  boxShadow: isDark ? '0 0 16px var(--accent-glow)' : 'none',
+                  textAlign: 'left',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <div style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
+                  background: '#000000',
+                  border: '1px solid #222',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#2ea043',
+                  flexShrink: 0
+                }}>
+                  <Terminal size={18} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>Git Bash Terminal</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Pitch black #000000</div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTheme('light')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '14px 16px',
+                  borderRadius: 10,
+                  cursor: 'pointer',
+                  background: !isDark ? 'var(--panel-active)' : 'var(--panel)',
+                  border: `2px solid ${!isDark ? 'var(--accent)' : 'var(--line)'}`,
+                  color: 'var(--text)',
+                  boxShadow: !isDark ? '0 0 16px var(--accent-glow)' : 'none',
+                  textAlign: 'left',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <div style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
+                  background: '#f6f8fa',
+                  border: '1px solid #d0d7de',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#0969da',
+                  flexShrink: 0
+                }}>
+                  <Sun size={18} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>Clean Light</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>High-contrast developer</div>
+                </div>
+              </button>
             </div>
           </div>
         </div>

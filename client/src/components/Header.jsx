@@ -1,6 +1,8 @@
 import React from 'react';
 import { Layers, GitFork, Share2, RotateCcw, ChevronDown, ChevronUp, Database } from 'lucide-react';
 
+import { dsaSheets } from '@/content/dsa-sheets/registry';
+
 const SHEET_INFO = {
   dp: {
     eyebrow: "Category-Wise DP Problem Sheet",
@@ -23,8 +25,14 @@ const SHEET_INFO = {
 };
 
 export function Header({ activeTab, onExpandAll, onCollapseAll, onResetProgress, totalSolved }) {
-  const currentSheet = SHEET_INFO[activeTab] || SHEET_INFO.dp;
-  const SheetIcon = currentSheet.icon;
+  const matchedSheet = dsaSheets.find(s => s.slug === activeTab);
+  const currentSheet = SHEET_INFO[activeTab] || {
+    eyebrow: `${matchedSheet?.title || 'DSA'} Problem Sheet`,
+    title: matchedSheet?.title || 'Data Structures & Algorithms',
+    subtitle: matchedSheet?.description || 'Curated algorithmic problems grouped by recurrence and traversal pattern.',
+    icon: Layers,
+  };
+  const SheetIcon = currentSheet.icon || Layers;
 
   const handleReset = () => {
     if (totalSolved === 0) return;

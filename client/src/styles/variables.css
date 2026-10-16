@@ -1,17 +1,131 @@
-:root {
-  --bg: #08090f;
-  --bg-elev: #0d0f18;
-  --panel: #10121d;
-  --panel-border: rgba(255, 255, 255, 0.07);
-  --panel-border-strong: rgba(255, 255, 255, 0.14);
-  --text-hi: #f1f2f6;
-  --text-mid: #9aa0b4;
-  --text-low: #5d6178;
-  --indigo: #7c7ff5;
-  --indigo-soft: rgba(124, 127, 245, 0.14);
-  --green: #34d399;
-  --amber: #f4b740;
-  --red: #f0656f;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+/* client/src/styles/variables.css */
+/* 
+   Phoenix Odyssey — Theme Variables
+   Dark Mode: Pitch Black (#000000) Git Bash Terminal Themed
+   Light Mode: Modern High-Contrast Developer Interface
+*/
+
+:root,
+[data-theme="dark"] {
+  /* Pitch Black Git Bash Terminal Canvas */
+  --bg: #000000;
+  --bg-elev: #07080a;
+  --bg-card: #0c0e12;
+  --panel: #0a0c10;
+  --panel-hover: #12151c;
+  --panel-active: #181d26;
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Terminal Line / Borders */
+  --line: #1c202a;
+  --line-soft: #13161e;
+  --border: #1c202a;
+
+  /* Terminal Text Hierarchy */
+  --text: #f0f6fc;
+  --text-hi: #f0f6fc;
+  --text-mid: #8b949e;
+  --text-dim: #8b949e;
+  --text-faint: #484f58;
+  --text-low: #484f58;
+
+  /* Git Bash Prompt Signatures */
+  --term-prompt: #2ea043;
+  --term-branch: #58a6ff;
+  --term-path: #d29922;
+  --term-cursor: #3fb950;
+  --term-purple: #bc8cff;
+
+  /* Accent defaults (overridden per-sheet/company) */
+  --accent: #2ea043;
+  --accent-glow: rgba(46, 160, 67, 0.22);
+  --accent-dim: #1e7030;
+  --indigo: #58a6ff;
+  --indigo-soft: rgba(88, 166, 255, 0.12);
+  --green: #3fb950;
+  --amber: #d29922;
+  --red: #f85149;
+
+  /* Difficulty tags */
+  --easy: #3fb950;
+  --easy-bg: rgba(63, 185, 80, 0.14);
+  --medium: #d29922;
+  --medium-bg: rgba(210, 153, 34, 0.14);
+  --hard: #f85149;
+  --hard-bg: rgba(248, 81, 73, 0.14);
+
+  /* Geometry & Shadows */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.85);
+  --shadow-glow: 0 0 24px rgba(46, 160, 67, 0.18);
+  --navbar-bg: rgba(0, 0, 0, 0.88);
+
+  /* Fonts */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Space Grotesk', 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+}
+
+[data-theme="light"] {
+  /* Crisp Modern Developer Light Canvas */
+  --bg: #f6f8fa;
+  --bg-elev: #ffffff;
+  --bg-card: #ffffff;
+  --panel: #ffffff;
+  --panel-hover: #f3f4f6;
+  --panel-active: #e5e7eb;
+  --panel-border: rgba(0, 0, 0, 0.09);
+  --panel-border-strong: rgba(0, 0, 0, 0.18);
+
+  /* Borders */
+  --line: #d0d7de;
+  --line-soft: #e1e4e8;
+  --border: #d0d7de;
+
+  /* Text Hierarchy */
+  --text: #1f2328;
+  --text-hi: #0f172a;
+  --text-mid: #57606a;
+  --text-dim: #57606a;
+  --text-faint: #8c959f;
+  --text-low: #8c959f;
+
+  /* Terminal Signatures in Light Mode */
+  --term-prompt: #1a7f37;
+  --term-branch: #0969da;
+  --term-path: #9a6700;
+  --term-cursor: #1a7f37;
+  --term-purple: #8250df;
+
+  /* Accent defaults (overridden per-sheet/company) */
+  --accent: #1a7f37;
+  --accent-glow: rgba(26, 127, 55, 0.15);
+  --accent-dim: #116329;
+  --indigo: #0969da;
+  --indigo-soft: rgba(9, 105, 218, 0.1);
+  --green: #1a7f37;
+  --amber: #9a6700;
+  --red: #cf222e;
+
+  /* Difficulty tags (readable on light) */
+  --easy: #1a7f37;
+  --easy-bg: rgba(26, 127, 55, 0.12);
+  --medium: #9a6700;
+  --medium-bg: rgba(154, 103, 0, 0.12);
+  --hard: #cf222e;
+  --hard-bg: rgba(207, 34, 46, 0.12);
+
+  /* Geometry & Shadows */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 4px 18px rgba(0, 0, 0, 0.07);
+  --shadow-glow: 0 0 20px rgba(26, 127, 55, 0.12);
+  --navbar-bg: rgba(255, 255, 255, 0.92);
+
+  /* Fonts */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Space Grotesk', 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
 }

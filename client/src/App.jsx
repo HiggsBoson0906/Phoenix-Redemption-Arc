@@ -2,8 +2,9 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
-import Dashboard from './pages/Dashboard/Dashboard';
 import Settings from './pages/Settings/Settings';
+import DSAPage from './pages/DSA/DSAPage';
+import CompanyPrepPage from './pages/CompanyPrep/CompanyPrepPage';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -14,13 +15,21 @@ function App() {
     <AuthProvider>
       <ProgressProvider>
         <Routes>
-          {/* Main Questions Sheets (Accessible to everyone) */}
-          <Route path="/" element={<Dashboard defaultTab="dp" />} />
-          <Route path="/questions" element={<Dashboard defaultTab="dp" />} />
-          <Route path="/dashboard" element={<Dashboard defaultTab="dp" />} />
-          <Route path="/dp" element={<Dashboard defaultTab="dp" />} />
-          <Route path="/tree" element={<Dashboard defaultTab="tree" />} />
-          <Route path="/graph" element={<Dashboard defaultTab="graph" />} />
+          {/* Main DSA Platform (Direct landing) */}
+          <Route path="/" element={<DSAPage defaultTab="dp" />} />
+          <Route path="/dsa" element={<DSAPage defaultTab="dp" />} />
+          <Route path="/dsa/:sheetSlug" element={<DSAPage />} />
+          
+          {/* Backwards-compatible DSA routes */}
+          <Route path="/questions" element={<DSAPage defaultTab="dp" />} />
+          <Route path="/dashboard" element={<DSAPage defaultTab="dp" />} />
+          <Route path="/dp" element={<DSAPage defaultTab="dp" />} />
+          <Route path="/tree" element={<DSAPage defaultTab="tree" />} />
+          <Route path="/graph" element={<DSAPage defaultTab="graph" />} />
+
+          {/* Company-Wise Preparation */}
+          <Route path="/company-prep" element={<CompanyPrepPage />} />
+          <Route path="/company-prep/:companySlug" element={<CompanyPrepPage />} />
 
           {/* Authentication Routes */}
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
@@ -29,7 +38,7 @@ function App() {
           {/* User Settings (Protected) */}
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
-          {/* Fallback redirect */}
+          {/* Fallback redirect to DSA */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </ProgressProvider>

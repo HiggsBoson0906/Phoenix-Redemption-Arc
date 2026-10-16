@@ -230,4 +230,6 @@ export const useProgressContext = () => {
   return ctx;
 };
 
+export const useProgress = useProgressContext;
+
 export default ProgressContext;

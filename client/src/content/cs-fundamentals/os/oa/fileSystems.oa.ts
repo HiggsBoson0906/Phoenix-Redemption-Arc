@@ -1,0 +1,146 @@
+// src/content/cs-fundamentals/os/oa/fileSystems.oa.ts
+
+import type { OAQuestion, OARevisionNotes } from "@/types";
+
+export const fileSystemsRevisionNotes: OARevisionNotes = {
+  quickRevision: [
+    "Allocation methods: Contiguous (fast, fragments), Linked (no fragmentation, slow random access), Indexed/inode-based (balances both).",
+    "Inode stores metadata + block pointers, NOT the filename — filenames live in directory entries.",
+    "Hard link: another directory entry pointing to the same inode. Symbolic link: a separate file containing a path.",
+    "Free space tracked via a bitmap or a free list.",
+    "Journaling logs intended changes before applying them, for crash recovery.",
+  ],
+  importantFacts: [
+    "A file's data is only actually freed once its link count reaches zero (relevant with hard links).",
+    "Direct/indirect/doubly-indirect block pointers let small files stay compact while supporting large files.",
+    "A symbolic link can 'dangle' (point to a target that no longer exists); a hard link cannot, since it directly references the inode.",
+  ],
+};
+
+export const fileSystemsOAQuestions: OAQuestion[] = [
+  {
+    id: "fs-oa-1",
+    question: "Where is a file's NAME stored in a Unix-style file system?",
+    options: [
+      "In the file's inode",
+      "In the directory entry that maps names to inode numbers",
+      "In the superblock",
+      "It isn't stored anywhere; names are computed dynamically",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "The inode holds metadata and block pointers, but the actual name-to-inode mapping lives in the containing directory's entries.",
+    difficulty: "Medium",
+    topicTags: ["inode", "directory structure"],
+  },
+  {
+    id: "fs-oa-2",
+    question: "What happens to a file's data when one of several hard links to it is deleted?",
+    options: [
+      "The data is immediately deleted",
+      "Nothing happens to the data until the link count drops to zero",
+      "All hard links are deleted simultaneously",
+      "The file becomes read-only",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Since hard links share the same inode, the data (and inode) persist as long as at least one directory entry still references it.",
+    difficulty: "Medium",
+    topicTags: ["hard links"],
+  },
+  {
+    id: "fs-oa-3",
+    question: "Which allocation method suffers from external fragmentation, similar to segmentation?",
+    options: ["Linked allocation", "Indexed allocation", "Contiguous allocation", "None of these"],
+    correctAnswerIndex: 2,
+    explanation: "Contiguous allocation requires each file's blocks to sit in one unbroken run, so free space fragments over time just like segments do.",
+    difficulty: "Medium",
+    topicTags: ["allocation methods"],
+  },
+  {
+    id: "fs-oa-4",
+    question: "What is the main drawback of linked (chained) block allocation?",
+    options: [
+      "It wastes too much contiguous space",
+      "Random access is slow since blocks must be traversed sequentially via pointers",
+      "It cannot support files larger than one block",
+      "It requires a bitmap",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "To reach block N of a linked file, you must traverse N-1 pointers first, making random access inherently sequential and slow.",
+    difficulty: "Medium",
+    topicTags: ["linked allocation"],
+  },
+  {
+    id: "fs-oa-5",
+    question: "A symbolic (soft) link that points to a deleted file is said to be:",
+    options: ["Corrupted", "Dangling", "Hard-linked", "Indexed"],
+    correctAnswerIndex: 1,
+    explanation: "Since a symlink just stores a path string resolved at access time, if the target no longer exists the symlink 'dangles' — it still exists but resolves to nothing.",
+    difficulty: "Easy",
+    topicTags: ["symbolic links"],
+  },
+  {
+    id: "fs-oa-6",
+    question: "What does a journaling file system write BEFORE modifying the actual file system structures?",
+    options: [
+      "Nothing extra is written",
+      "A log entry describing the intended change, to an append-only journal",
+      "A full backup of the entire disk",
+      "A new inode for every file",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Logging intent first lets the OS replay or roll back an interrupted operation cleanly after a crash, avoiding structural corruption.",
+    difficulty: "Medium",
+    topicTags: ["journaling"],
+  },
+  {
+    id: "fs-oa-7",
+    question: "Which free space management technique uses one bit per block to indicate free/used?",
+    options: ["Free list", "Bitmap", "Inode table", "Superblock"],
+    correctAnswerIndex: 1,
+    explanation: "A bitmap dedicates a single bit per block (typically 1=free, 0=used), giving compact, easily-scannable free space tracking.",
+    difficulty: "Easy",
+    topicTags: ["free space management"],
+  },
+  {
+    id: "fs-oa-8",
+    question: "What is the purpose of doubly-indirect blocks in an inode's indexed allocation scheme?",
+    options: [
+      "To store the filename twice for redundancy",
+      "To allow very large files by having a block that points to indirect blocks, which in turn point to data blocks",
+      "To speed up small file access",
+      "To encrypt file data",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Doubly-indirect (and triply-indirect) blocks extend addressable file size dramatically while keeping small files' metadata compact via direct pointers.",
+    difficulty: "Hard",
+    topicTags: ["indexed allocation", "inode structure"],
+  },
+  {
+    id: "fs-oa-9",
+    question: "Contiguous allocation's main advantage over linked/indexed allocation is:",
+    options: [
+      "It never fragments",
+      "Fast sequential AND random access, since block N is simply start + N",
+      "It requires no free space tracking",
+      "It supports unlimited file growth",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Since all blocks are consecutive, any block's location is a simple offset calculation, making both sequential and random access fast.",
+    difficulty: "Medium",
+    topicTags: ["contiguous allocation"],
+  },
+  {
+    id: "fs-oa-10",
+    question: "Can a hard link point to a directory in most Unix file systems?",
+    options: [
+      "Yes, freely, with no restrictions",
+      "No — hard links to directories are generally disallowed to prevent cycles in the file system tree",
+      "Only the root user can create one",
+      "Only for empty directories",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Allowing arbitrary directory hard links could create cycles, breaking tree-traversal assumptions many file system tools rely on — so most systems disallow it (symlinks to directories are fine).",
+    difficulty: "Hard",
+    topicTags: ["hard links", "directory structure"],
+  },
+];

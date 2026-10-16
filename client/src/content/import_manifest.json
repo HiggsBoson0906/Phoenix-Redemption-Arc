@@ -1,0 +1,205 @@
+{
+  "importedAt": "2026-10-16T02:09:55.414Z",
+  "sourceRepository": "https://github.com/Raaghav-09/PrepForge",
+  "targetRepository": "Phoenix-Redemption-Arc (AlgoAtlas)",
+  "categories": {
+    "dsa": {
+      "totalSheets": 22,
+      "totalProblems": 1981,
+      "sheets": [
+        {
+          "file": "array.ts",
+          "slug": "array",
+          "problemsCount": 36
+        },
+        {
+          "file": "backtracking.ts",
+          "slug": "backtracking",
+          "problemsCount": 71
+        },
+        {
+          "file": "bitManipulation.ts",
+          "slug": "bitManipulation",
+          "problemsCount": 74
+        },
+        {
+          "file": "concurrency.ts",
+          "slug": "concurrency",
+          "problemsCount": 9
+        },
+        {
+          "file": "deque.ts",
+          "slug": "deque",
+          "problemsCount": 11
+        },
+        {
+          "file": "gameTheory.ts",
+          "slug": "gameTheory",
+          "problemsCount": 19
+        },
+        {
+          "file": "graph.ts",
+          "slug": "graph",
+          "problemsCount": 468
+        },
+        {
+          "file": "greedy.ts",
+          "slug": "greedy",
+          "problemsCount": 100
+        },
+        {
+          "file": "heap.ts",
+          "slug": "heap",
+          "problemsCount": 17
+        },
+        {
+          "file": "linkedList.ts",
+          "slug": "linkedList",
+          "problemsCount": 25
+        },
+        {
+          "file": "mathNumberTheory.ts",
+          "slug": "mathNumberTheory",
+          "problemsCount": 111
+        },
+        {
+          "file": "matrix.ts",
+          "slug": "matrix",
+          "problemsCount": 33
+        },
+        {
+          "file": "queue.ts",
+          "slug": "queue",
+          "problemsCount": 30
+        },
+        {
+          "file": "rangeQuery.ts",
+          "slug": "rangeQuery",
+          "problemsCount": 96
+        },
+        {
+          "file": "slidingWindow.ts",
+          "slug": "slidingWindow",
+          "problemsCount": 78
+        },
+        {
+          "file": "stack.ts",
+          "slug": "stack",
+          "problemsCount": 51
+        },
+        {
+          "file": "stringAlgorithms.ts",
+          "slug": "stringAlgorithms",
+          "problemsCount": 89
+        },
+        {
+          "file": "trie.ts",
+          "slug": "trie",
+          "problemsCount": 20
+        },
+        {
+          "file": "twoPointer.ts",
+          "slug": "twoPointer",
+          "problemsCount": 86
+        },
+        {
+          "file": "dpSections.js",
+          "slug": "dp",
+          "problemsCount": 305
+        },
+        {
+          "file": "treeSections.js",
+          "slug": "tree",
+          "problemsCount": 145
+        },
+        {
+          "file": "binarySearchSections.js",
+          "slug": "binarySearch",
+          "problemsCount": 107
+        }
+      ]
+    },
+    "csFundamentals": {
+      "subjectsCount": 4,
+      "totalTop40Questions": 160,
+      "totalOaQuestions": 460,
+      "totalInterviewQuestions": 190,
+      "totalArticles": 40,
+      "totalItems": 850,
+      "subjects": {
+        "os": {
+          "top40Questions": 40,
+          "oaQuestions": 101,
+          "interviewQuestions": 40,
+          "articles": 10,
+          "totalContentItems": 191
+        },
+        "networks": {
+          "top40Questions": 40,
+          "oaQuestions": 120,
+          "interviewQuestions": 50,
+          "articles": 10,
+          "totalContentItems": 220
+        },
+        "dbms": {
+          "top40Questions": 40,
+          "oaQuestions": 119,
+          "interviewQuestions": 50,
+          "articles": 10,
+          "totalContentItems": 219
+        },
+        "oops": {
+          "top40Questions": 40,
+          "oaQuestions": 120,
+          "interviewQuestions": 50,
+          "articles": 10,
+          "totalContentItems": 220
+        }
+      }
+    },
+    "aptitude": {
+      "liveTopicsCount": 4,
+      "totalQuestions": 48,
+      "topics": {
+        "numberSystem": 12,
+        "percentage": 12,
+        "profitAndLoss": 12,
+        "timeAndWork": 12
+      }
+    },
+    "companyPreparation": {
+      "companiesCount": 4,
+      "totalProblems": 364,
+      "companies": {
+        "deShaw": 165,
+        "rippling": 54,
+        "tekion": 48,
+        "titan": 97
+      }
+    },
+    "behavioralInterview": {
+      "categoriesCount": 17,
+      "totalQuestions": 43
+    },
+    "projectsInterview": {
+      "categoriesCount": 16,
+      "totalQuestions": 32
+    },
+    "puzzles": {
+      "totalPuzzles": 90
+    }
+  },
+  "summary": {
+    "totalDsaProblems": 1981,
+    "totalCsFundamentalItems": 850,
+    "totalAptitudeQuestions": 48,
+    "totalCompanyProblems": 364,
+    "totalBehavioralQuestions": 43,
+    "totalProjectQuestions": 32,
+    "totalPuzzles": 90,
+    "grandTotalPreparationItems": 3408,
+    "skippedRecords": 0,
+    "duplicatesDetected": 0,
+    "validationFailures": 0
+  }
+}

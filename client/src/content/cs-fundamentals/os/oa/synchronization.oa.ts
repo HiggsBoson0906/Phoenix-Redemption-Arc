@@ -1,0 +1,151 @@
+// src/content/cs-fundamentals/os/oa/synchronization.oa.ts
+
+import type { OAQuestion, OARevisionNotes } from "@/types";
+
+export const synchronizationRevisionNotes: OARevisionNotes = {
+  quickRevision: [
+    "Race condition: outcome depends on unpredictable thread interleaving over shared data.",
+    "Critical section: code accessing shared data that must run with mutual exclusion.",
+    "Mutex: binary lock, owned by the locking thread. Semaphore: integer counter, wait()/signal(), no ownership.",
+    "Monitor: bundles data + procedures + synchronization; often paired with condition variables.",
+  ],
+  importantFacts: [
+    "A binary semaphore behaves like a mutex; a counting semaphore limits concurrent access to N resources.",
+    "wait()/P() decrements the semaphore (blocking if it goes below 0); signal()/V() increments it (waking a waiter if any).",
+    "counter++ is typically 3 machine steps (load, increment, store) — NOT atomic by default in most languages.",
+  ],
+};
+
+export const synchronizationOAQuestions: OAQuestion[] = [
+  {
+    id: "sync-oa-1",
+    question: "What is a race condition?",
+    options: [
+      "A CPU scheduling algorithm",
+      "A situation where the outcome depends on the unpredictable timing/interleaving of concurrent operations on shared data",
+      "A type of deadlock",
+      "A memory allocation error",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Race conditions arise specifically from unsynchronized concurrent access to shared state, producing timing-dependent (and often wrong) results.",
+    difficulty: "Easy",
+    topicTags: ["race condition"],
+  },
+  {
+    id: "sync-oa-2",
+    question: "Two threads both execute `counter++` on a shared integer with no synchronization, starting from counter=0. What are the possible final values after both complete?",
+    options: ["Always 2", "Always 0", "1 or 2, depending on interleaving", "Always 1"],
+    correctAnswerIndex: 2,
+    explanation: "Since counter++ is read-increment-write (not atomic), both threads can read 0, each increment to 1, and both write 1 — losing an update. It can also correctly end at 2 if they don't interleave badly.",
+    difficulty: "Medium",
+    topicTags: ["race condition", "atomicity"],
+    companyStyle: "Infosys",
+  },
+  {
+    id: "sync-oa-3",
+    question: "What is the key difference between a mutex and a counting semaphore?",
+    options: [
+      "There is no difference",
+      "A mutex allows exactly one thread access and is conventionally released by the same thread that acquired it; a semaphore is a general counter that can allow N accesses and be signaled by a different thread",
+      "A semaphore can only be used once",
+      "A mutex is always slower than a semaphore",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Mutexes have ownership semantics (lock/unlock by the same thread); semaphores are ownerless counters usable for both mutual exclusion and cross-thread signaling.",
+    difficulty: "Medium",
+    topicTags: ["mutex vs semaphore"],
+  },
+  {
+    id: "sync-oa-4",
+    question: "In the Producer-Consumer problem, what happens if the shared buffer is full and a producer tries to add an item?",
+    options: [
+      "The item overwrites a random existing item",
+      "The producer must block/wait until a consumer removes an item and frees space",
+      "The program crashes immediately",
+      "The buffer automatically resizes",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "A correctly synchronized bounded buffer blocks producers when full (and consumers when empty) rather than corrupting data.",
+    difficulty: "Easy",
+    topicTags: ["producer-consumer"],
+  },
+  {
+    id: "sync-oa-5",
+    question: "What does the wait() (P) operation do to a semaphore's value?",
+    options: [
+      "Increments it",
+      "Decrements it, blocking the calling thread if the result would go below zero",
+      "Resets it to zero",
+      "Has no effect on the value",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "wait()/P() atomically decrements the semaphore; if that would make it negative, the calling thread blocks until a corresponding signal().",
+    difficulty: "Medium",
+    topicTags: ["semaphore operations"],
+  },
+  {
+    id: "sync-oa-6",
+    question: "A binary semaphore is functionally most similar to which primitive?",
+    options: ["A counting semaphore with value 100", "A mutex", "A scheduler", "A page table"],
+    correctAnswerIndex: 1,
+    explanation: "A binary semaphore (values 0 or 1) enforces the same one-holder-at-a-time behavior as a mutex.",
+    difficulty: "Easy",
+    topicTags: ["semaphore types"],
+  },
+  {
+    id: "sync-oa-7",
+    question: "In the Readers-Writers problem, which access pattern is allowed simultaneously?",
+    options: [
+      "Multiple writers at once",
+      "One reader and one writer at once",
+      "Multiple readers at once (but writers need exclusive access)",
+      "No concurrent access is ever allowed",
+    ],
+    correctAnswerIndex: 2,
+    explanation: "Readers don't modify data so multiple can safely read concurrently; writers need exclusive access to prevent corrupting data mid-read.",
+    difficulty: "Medium",
+    topicTags: ["readers-writers"],
+  },
+  {
+    id: "sync-oa-8",
+    question: "What is a 'critical section'?",
+    options: [
+      "The most important function in a program",
+      "A code segment that accesses shared resources and must not be concurrently executed by more than one thread",
+      "The main() function",
+      "A section of the file system reserved for the OS",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "The critical section is precisely the code that synchronization primitives are used to protect from concurrent execution.",
+    difficulty: "Easy",
+    topicTags: ["critical section"],
+  },
+  {
+    id: "sync-oa-9",
+    question: "Why are condition variables typically used together with a mutex/monitor lock?",
+    options: [
+      "They aren't related to locks at all",
+      "To let a thread atomically release the lock while waiting for a condition, and reacquire it upon waking, avoiding lost wakeups and busy-waiting",
+      "Condition variables replace the need for any locking",
+      "To speed up context switching",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Condition variables are always paired with a lock so wait/checking the condition/sleeping happens atomically with respect to other threads modifying that condition.",
+    difficulty: "Hard",
+    topicTags: ["condition variables"],
+  },
+  {
+    id: "sync-oa-10",
+    question: "The Dining Philosophers problem is primarily used to illustrate:",
+    options: [
+      "Memory leaks",
+      "Deadlock risk from circular resource acquisition",
+      "CPU scheduling fairness",
+      "File system fragmentation",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Each philosopher needing two shared forks held by neighbors models exactly the circular-wait deadlock scenario.",
+    difficulty: "Medium",
+    topicTags: ["dining philosophers", "deadlock"],
+  },
+];

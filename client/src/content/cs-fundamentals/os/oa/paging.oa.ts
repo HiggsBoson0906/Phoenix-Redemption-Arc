@@ -1,0 +1,150 @@
+// src/content/cs-fundamentals/os/oa/paging.oa.ts
+
+import type { OAQuestion, OARevisionNotes } from "@/types";
+
+export const pagingRevisionNotes: OARevisionNotes = {
+  quickRevision: [
+    "Virtual address = Page Number + Offset. Physical address = Frame Number + Offset (offset unchanged).",
+    "Page table maps page number → frame number.",
+    "TLB caches recent translations to avoid slow page table walks.",
+    "Multi-level page tables save memory for sparse/large address spaces.",
+  ],
+  importantFacts: [
+    "Number of offset bits = log2(page size).",
+    "Number of page number bits = log2(virtual address space size) − offset bits.",
+    "A TLB miss requires a full page table walk, which is far slower than a TLB hit.",
+  ],
+  formulas: [
+    "Physical Address = (Frame Number × Page Size) + Offset",
+    "Effective Access Time (EAT) = Hit Ratio × (TLB time + Memory time) + Miss Ratio × (TLB time + 2 × Memory time)",
+    "Number of pages = Virtual Address Space Size / Page Size",
+  ],
+  shortcuts: [
+    "If page size is a power of 2 (e.g. 1024 = 2^10), offset = address MOD page size, page number = address DIV page size — no need for binary conversion, plain division works.",
+  ],
+};
+
+export const pagingOAQuestions: OAQuestion[] = [
+  {
+    id: "paging-oa-1",
+    question: "With page size 1024 bytes, and page 3 mapped to frame 5, what physical address does virtual address 3200 map to?",
+    options: ["5248", "5200", "4224", "3200"],
+    correctAnswerIndex: 0,
+    explanation: "Page number = 3200 div 1024 = 3, offset = 3200 − 3072 = 128. Physical address = frame 5 × 1024 + 128 = 5120 + 128 = 5248.",
+    difficulty: "Medium",
+    topicTags: ["address translation", "numerical"],
+    companyStyle: "TCS NQT",
+  },
+  {
+    id: "paging-oa-2",
+    question: "A system has TLB access time 20ns, memory access time 100ns, and TLB hit ratio 80%. What is the Effective Access Time?",
+    options: ["120ns", "140ns", "220ns", "100ns"],
+    correctAnswerIndex: 1,
+    explanation: "EAT = 0.8×(20+100) + 0.2×(20+100+100) = 0.8×120 + 0.2×220 = 96 + 44 = 140ns.",
+    difficulty: "Hard",
+    topicTags: ["TLB", "EAT", "numerical"],
+    companyStyle: "Amazon OA",
+  },
+  {
+    id: "paging-oa-3",
+    question: "A virtual address space is 32 bits and page size is 4KB (2^12 bytes). How many bits are used for the page number?",
+    options: ["12", "16", "20", "32"],
+    correctAnswerIndex: 2,
+    explanation: "Offset bits = log2(4096) = 12. Page number bits = 32 − 12 = 20.",
+    difficulty: "Medium",
+    topicTags: ["address bits", "numerical"],
+  },
+  {
+    id: "paging-oa-4",
+    question: "What causes internal fragmentation in a paging system?",
+    options: [
+      "Free memory scattered in small non-contiguous chunks",
+      "A process's last allocated page not being fully used, wasting the unused portion",
+      "The TLB running out of space",
+      "Too many processes running",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Since memory is allocated in whole pages, a process's final page is often only partially used, wasting the rest of that page.",
+    difficulty: "Easy",
+    topicTags: ["fragmentation"],
+  },
+  {
+    id: "paging-oa-5",
+    question: "What is stored in a Translation Lookaside Buffer (TLB)?",
+    options: [
+      "The entire page table",
+      "A small cache of recently used virtual-to-physical address translations",
+      "A list of running processes",
+      "Disk block addresses",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "The TLB is a small, fast associative cache of recent page-to-frame translations to avoid repeated slow page table walks.",
+    difficulty: "Easy",
+    topicTags: ["TLB"],
+  },
+  {
+    id: "paging-oa-6",
+    question: "Why do modern systems use multi-level (hierarchical) page tables instead of one flat table?",
+    options: [
+      "Flat tables are faster but use more memory",
+      "Multi-level tables avoid allocating page table entries for unused regions of a large/sparse address space, saving memory",
+      "Multi-level tables eliminate the need for a TLB",
+      "Flat tables cannot represent more than 256 pages",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "A flat table for a large address space would be enormous even if mostly unused; hierarchical tables only allocate entries for regions actually in use.",
+    difficulty: "Medium",
+    topicTags: ["multi-level page tables"],
+  },
+  {
+    id: "paging-oa-7",
+    question: "What does the 'dirty bit' in a page table entry indicate?",
+    options: [
+      "The page contains corrupted data",
+      "The page has been modified since being loaded into memory, so it must be written back before eviction",
+      "The page is currently locked",
+      "The page belongs to the kernel",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "The dirty bit tells the OS whether a page's contents differ from what's on disk, which determines if a write-back is needed on eviction.",
+    difficulty: "Medium",
+    topicTags: ["page table entry bits"],
+  },
+  {
+    id: "paging-oa-8",
+    question: "What happens on a TLB miss?",
+    options: [
+      "The process is terminated",
+      "The CPU/OS must walk the page table in memory to find the translation, which is slower than a TLB hit",
+      "The page is automatically deleted",
+      "Nothing — the access simply fails silently",
+    ],
+    correctAnswerIndex: 1,
+    explanation: "A TLB miss falls back to a full (possibly multi-level) page table walk, which costs significantly more time than a cached TLB hit.",
+    difficulty: "Easy",
+    topicTags: ["TLB miss"],
+  },
+  {
+    id: "paging-oa-9",
+    question: "If a page size is 512 bytes, how many offset bits are needed?",
+    options: ["7", "8", "9", "10"],
+    correctAnswerIndex: 2,
+    explanation: "512 = 2^9, so 9 bits are needed to represent every possible offset within a page.",
+    difficulty: "Easy",
+    topicTags: ["address bits", "numerical"],
+  },
+  {
+    id: "paging-oa-10",
+    question: "The 'valid/present' bit in a page table entry is used to indicate:",
+    options: [
+      "Whether the page is currently loaded in physical memory or must be fetched from disk (page fault)",
+      "Whether the process has admin privileges",
+      "Whether the page is read-only",
+      "The page's creation timestamp",
+    ],
+    correctAnswerIndex: 0,
+    explanation: "If the valid bit is unset, accessing that page triggers a page fault so the OS can load it from disk (or handle it as an invalid access).",
+    difficulty: "Medium",
+    topicTags: ["page fault", "valid bit"],
+  },
+];

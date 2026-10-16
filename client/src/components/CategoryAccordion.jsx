@@ -41,15 +41,24 @@ export function CategoryAccordion({
               No problems match your filters in this category.
             </div>
           ) : (
-            filteredProblems.map(([slug, diff]) => (
-              <ProblemRow
-                key={slug}
-                slug={slug}
-                diff={diff}
-                isChecked={!!checkedState[slug]}
-                onToggle={onToggleProblem}
-              />
-            ))
+            filteredProblems.map((prob) => {
+              const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+              const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
+              const title = Array.isArray(prob) ? prob[2] : prob.title;
+              const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+              return (
+                <ProblemRow
+                  key={slug}
+                  slug={slug}
+                  diff={diff}
+                  title={title}
+                  url={url}
+                  isChecked={!!checkedState[slug]}
+                  onToggle={onToggleProblem}
+                />
+              );
+            })
           )}
         </div>
       )}

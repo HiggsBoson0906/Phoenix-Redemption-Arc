@@ -1,0 +1,65 @@
+// src/content/cs-fundamentals/oops/articles/structuralBehavioralPatterns.ts
+
+import type { Article } from "@/types";
+
+const structuralBehavioralPatternsArticle: Article = {
+  slug: "structural-behavioral-patterns",
+  title: "Structural & Behavioral Design Patterns",
+  summary:
+    "Structural patterns (Adapter, Decorator, Facade) shape how classes and objects are composed into larger structures; behavioral patterns (Observer, Strategy, Command) shape how objects communicate and distribute responsibility for algorithms and requests.",
+  readingTimeMins: 13,
+  beginnerExplanation:
+    "Structural patterns answer 'how do I compose objects and classes into bigger structures cleanly?' — Adapter makes two incompatible interfaces work together, Decorator adds behavior to an object without changing its class, and Facade hides a complicated subsystem behind one simple interface. Behavioral patterns answer 'how do objects talk to each other and share responsibility for behavior?' — Observer lets objects subscribe to be notified of another object's changes, Strategy lets you swap an algorithm's implementation at runtime, and Command turns a request itself into an object you can queue, log, or undo.\n\nAll six are GoF (Gang of Four) patterns, and knowing which of the two categories a pattern belongs to isn't just trivia — structural patterns are about object/class *composition* (the shape of relationships between existing pieces), while behavioral patterns are about *communication and responsibility* (how control and data flow between objects at runtime).",
+  detailedBreakdown:
+    "**Adapter (Structural)** converts the interface of a class into another interface clients expect, letting classes work together that couldn't otherwise because of incompatible interfaces — solves 'I have a `LegacyLogger.writeLog(String)` method, but my new system expects an `ILogger` interface with a `log(String)` method.' An `LegacyLoggerAdapter implements ILogger` wraps a `LegacyLogger` instance and translates `log(msg)` calls into `writeLog(msg)` calls internally. It's purely a translation layer — no new behavior is added, just interface compatibility.\n\n**Decorator (Structural)** attaches additional responsibilities to an object dynamically, providing a flexible alternative to subclassing for extending behavior — solves 'I want to add behavior (compression, encryption, buffering) to an object at runtime, in any combination, without creating a combinatorial explosion of subclasses.' A `Coffee` interface with a `cost()` method has a base `SimpleCoffee` implementation; `MilkDecorator` and `SugarDecorator` each wrap an existing `Coffee` instance and implement `Coffee` themselves, adding their own cost on top of the wrapped object's cost — `new SugarDecorator(new MilkDecorator(new SimpleCoffee()))` composes behaviors by wrapping, not by creating a `CoffeeWithMilkAndSugar` subclass for every combination.\n\n**Facade (Structural)** provides a simplified, unified interface to a complex subsystem of classes — solves 'my client code needs to coordinate calls across 8 different subsystem classes just to perform one logical operation, and I want to hide that complexity.' A `HomeTheaterFacade.watchMovie()` method internally calls `projector.on()`, `screen.lower()`, `soundSystem.setVolume()`, `dvdPlayer.play()` in the right order, so client code just calls one method instead of orchestrating the whole subsystem itself. Facade doesn't add new functionality or hide the subsystem entirely (advanced clients can still reach the subsystem classes directly) — it just adds a simpler entry point for the common case.\n\n**Observer (Behavioral)** defines a one-to-many dependency so that when one object (the subject/publisher) changes state, all its dependents (observers/subscribers) are notified and updated automatically — solves 'many parts of my system need to react when this object's state changes, without that object needing to know concrete details about all of them.' A `WeatherStation` (subject) maintains a list of `Observer` objects and calls `update(temperature)` on each one whenever new data arrives; `PhoneDisplay` and `WebDashboard` both implement `Observer` and register themselves, and `WeatherStation` never needs to know their concrete types — only that they implement `Observer`.\n\n**Strategy (Behavioral)** defines a family of interchangeable algorithms, encapsulates each one, and makes them swappable at runtime independent of the clients that use them — solves 'I have several variants of an algorithm (different sorting approaches, different payment methods, different route calculations) and I want to select or swap which one is used without an if/else chain and without the client code caring which one it's using.' A `PaymentStrategy` interface with a `pay(amount)` method, implemented by `CreditCardStrategy`, `PayPalStrategy`, `CryptoStrategy`, injected into a `Checkout` class that just calls `strategy.pay(amount)` — this is precisely the pattern that emerges from correctly applying Open/Closed and Dependency Inversion to an if/else chain.\n\n**Command (Behavioral)** encapsulates a request as an object, containing all information needed to perform an action (or undo it) later — solves 'I want to parameterize objects with an action to perform, queue/log requests, or support undo/redo, without the invoker needing to know anything about the concrete operation.' A `Command` interface with `execute()` (and often `undo()`), implemented by `LightOnCommand`, `LightOffCommand`, each wrapping a receiver object (`Light`) and the specific action to invoke on it; a `RemoteControl` (invoker) just holds and calls `command.execute()` without knowing what the command actually does, enabling features like a generic undo stack (each executed command pushed onto a stack, `undo()` popped and called) or queuing commands for later/batch execution.",
+  realWorldExamples:
+    "Java's `Arrays.asList()` wrapping an array to look like a `List` is an Adapter. Java I/O streams are a textbook Decorator: `new BufferedReader(new InputStreamReader(new FileInputStream(file)))` wraps stream after stream, each adding one capability (buffering, character decoding) without a combinatorial class explosion. jQuery's simplified DOM API is a Facade over the verbose native DOM API. Java's `Observable`/`Observer` classes (and more modernly, listener patterns like `addActionListener` in Swing, or reactive streams) implement Observer directly. `Comparator` passed into `Collections.sort()` is Strategy — the sort algorithm's comparison behavior is swapped without touching the sort implementation. GUI frameworks' menu items and buttons binding to `Command`-like action objects (Swing's `Action` interface, or Redux-style 'actions' in frontend state management) implement Command, and most undo/redo systems in editors are built directly on it.",
+  useCases: [
+    "Adapter: integrating a third-party or legacy library whose interface doesn't match what your code expects, without modifying that library",
+    "Decorator: adding optional, combinable behavior (logging, caching, compression, validation) to objects at runtime without subclass explosion",
+    "Facade: giving client code (or a public API) one simple entry point over a complex internal subsystem",
+    "Observer: event-driven systems, UI data binding, pub/sub messaging where many parts must react to one source of truth changing",
+    "Strategy: swapping algorithms/business rules at runtime (payment methods, sorting/routing strategies, pricing rules) without conditional branching",
+    "Command: implementing undo/redo, macro recording, request queuing/logging, or decoupling UI triggers from the operations they invoke",
+  ],
+  advantages: [
+    "Adapter and Facade both let you integrate with or simplify existing code without modifying it, preserving Open/Closed",
+    "Decorator adds behavior far more flexibly than inheritance, letting behaviors be composed in any combination at runtime",
+    "Observer decouples publishers from subscribers, letting new observer types be added without touching the subject",
+    "Strategy eliminates conditional logic for algorithm selection and makes each algorithm independently testable",
+    "Command decouples the invoker of an action from the object that performs it, and directly enables undo/redo and request queuing",
+  ],
+  disadvantages: [
+    "Overusing Decorator can produce long wrapper chains that are hard to debug and reason about the final combined behavior of",
+    "Facade can become a 'god object' itself if it accumulates too much orchestration logic rather than staying a thin coordination layer",
+    "Observer can cause hidden performance costs or hard-to-trace update cascades if there are many observers or observers trigger further notifications",
+    "Adding a new command class for every possible action (Command pattern) can mean a lot of small classes for simple systems",
+    "Strategy requires the client to know which concrete strategy to select at some point, so the 'which one' decision has to live somewhere (often resolved with a factory)",
+  ],
+  commonMisconceptions: [
+    "\"Adapter and Facade are the same because both simplify an interface\" — Adapter's job is *compatibility* between an existing interface and an expected one (usually one-to-one, no new simplification of the underlying complexity); Facade's job is *simplification* of a genuinely complex multi-class subsystem into one entry point (typically one-to-many).",
+    "\"Decorator and inheritance solve the same problem equally well\" — inheritance fixes behavior combinations at compile time (needing a subclass per combination); Decorator composes behavior at runtime, avoiding the combinatorial explosion.",
+    "\"Observer requires a specific 'Observable' base class\" — the pattern is about the subject/observer *interface* contract (register, unregister, notify), which can be implemented via composition/interfaces without inheriting from any particular framework base class.",
+    "\"Strategy and State patterns are the same\" — they have nearly identical structure (a context holding a reference to an interchangeable object), but Strategy is about the *client* choosing an algorithm, while State is about an object's *own internal state* determining its behavior and transitioning itself between states.",
+  ],
+  interviewPerspective:
+    "Interviewers frequently ask you to correctly classify a named pattern as structural or behavioral and justify it structurally (composition/shape vs communication/responsibility), and to distinguish closely related pairs: Adapter vs Facade, Strategy vs simple polymorphism, Decorator vs subclassing. Be ready to design one of these from a real scenario on the spot — 'add logging to this class without modifying it' (Decorator), 'let multiple parts of the UI react to a data change' (Observer), 'let the user undo their last five actions' (Command).",
+  oaPerspective:
+    "OA questions often present a short code snippet (a wrapping/chaining constructor call, a subject with a list of listeners, an interface with interchangeable implementations selected at runtime) and ask which specific pattern it implements, plus whether it's structural or behavioral. Expect direct 'which pattern lets you add behavior without subclassing' (Decorator) and 'which pattern decouples an action from who triggers it' (Command) style questions.",
+  keyTakeaways: [
+    "Structural patterns (Adapter, Decorator, Facade) are about composing classes/objects into larger structures cleanly.",
+    "Behavioral patterns (Observer, Strategy, Command) are about how objects communicate and share responsibility for behavior.",
+    "Adapter = interface translation for compatibility; Facade = simplification of a complex subsystem; Decorator = dynamically composable added behavior.",
+    "Observer = one-to-many change notification; Strategy = swappable algorithm family; Command = a request turned into an object, enabling undo/queuing.",
+    "Correctly distinguishing near-identical-looking pairs (Adapter vs Facade, Strategy vs State) is a frequent interview signal of real understanding.",
+  ],
+  summaryClosing:
+    "These six patterns are the day-to-day working vocabulary of real OOP system design — recognizing which one a situation calls for (and being able to say precisely why, by naming the structural shape or communication responsibility involved) is far more valuable in an interview than memorizing UML diagrams for all 23 GoF patterns.",
+  relatedTopics: ["SOLID Principles", "Creational Design Patterns", "Abstract Classes & Interfaces"],
+  furtherReading: [
+    { label: "Gang of Four — Design Patterns: Elements of Reusable Object-Oriented Software", note: "The original catalog defining all structural and behavioral patterns discussed here." },
+    { label: "Head First Design Patterns", note: "A more approachable, example-driven walkthrough of Decorator, Observer, Strategy, and Command specifically." },
+  ],
+};
+
+export default structuralBehavioralPatternsArticle;

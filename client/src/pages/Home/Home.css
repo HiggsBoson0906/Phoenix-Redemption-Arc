@@ -7,8 +7,9 @@ nav {
   border-bottom: 1px solid var(--panel-border);
   position: sticky;
   top: 0;
-  background: rgba(8, 9, 15, 0.82);
+  background: var(--navbar-bg);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   z-index: 50;
 }
 .brand {
