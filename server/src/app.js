@@ -9,6 +9,7 @@ const app = express();
 
 // CORS Middleware
 const defaultOrigins = [
+  "http://localhost:3000",
   "http://localhost:5173",
   "http://localhost:5174",
   "https://algo-atlas-tau.vercel.app"
@@ -16,10 +17,10 @@ const defaultOrigins = [
 
 const envOrigins = [];
 if (process.env.CLIENT_URL) {
-  envOrigins.push(...process.env.CLIENT_URL.split(",").map((o) => o.trim()));
+  envOrigins.push(...process.env.CLIENT_URL.split(",").map((o) => o.trim().replace(/\/+$/, "")));
 }
 if (process.env.FRONTEND_URL) {
-  envOrigins.push(...process.env.FRONTEND_URL.split(",").map((o) => o.trim()));
+  envOrigins.push(...process.env.FRONTEND_URL.split(",").map((o) => o.trim().replace(/\/+$/, "")));
 }
 
 const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
@@ -27,8 +28,15 @@ const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., Postman, mobile apps)
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (e.g., Postman, mobile apps, server-to-server)
+      if (!origin) return callback(null, true);
+
+      const normalizedOrigin = origin.trim().replace(/\/+$/, "");
+
+      if (
+        allowedOrigins.includes(normalizedOrigin) ||
+        (process.env.ALLOW_VERCEL_PREVIEWS === "true" && normalizedOrigin.endsWith(".vercel.app"))
+      ) {
         callback(null, true);
       } else {
         // Returning false instead of throwing an Error prevents a 500 response.
@@ -39,7 +47,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
   })
 );
 
