@@ -302,11 +302,11 @@ const Settings = () => {
       {/* ── Top Navbar / Header ── */}
       <header className="settings-header">
         <div className="settings-header-inner">
-          <Link to="/questions" className="settings-brand">
+          <Link to="/" className="settings-brand">
             <div className="brand-icon-wrap" style={{ width: 32, height: 32 }}>
               <Flame size={18} className="brand-icon" />
             </div>
-            <span>AlgoAtlas</span>
+            <span>Phoenix Odyssey</span>
           </Link>
 
           <button onClick={() => navigate('/questions')} className="settings-back-btn">

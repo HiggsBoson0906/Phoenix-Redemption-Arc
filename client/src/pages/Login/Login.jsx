@@ -9,7 +9,7 @@ const Login = () => {
   const location = useLocation();
   const { login, googleLogin } = useAuth();
 
-  const redirectTarget = (location.state?.from && location.state?.from !== '/') ? location.state.from : '/questions';
+  const redirectTarget = location.state?.from || '/';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -82,7 +82,7 @@ const Login = () => {
               <path d="M12 2L4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6l-8-4z" stroke="#08090f" strokeWidth="2" strokeLinejoin="round"/>
             </svg>
           </div>
-          AlgoAtlas
+          Phoenix Odyssey
         </Link>
         <div className="nav-side">New here? <Link to="/signup">Create an account</Link></div>
       </nav>
@@ -90,7 +90,7 @@ const Login = () => {
       <div className="stage">
         <div className="auth-card">
           <div className="eyebrow">WELCOME BACK</div>
-          <h1>Log in to AlgoAtlas</h1>
+          <h1>Log in to Phoenix Odyssey</h1>
           <p className="sub">Pick up your sheets right where you left off.</p>
 
           {/* ── Google Sign-In ─────────────────────────────────────────────── */}

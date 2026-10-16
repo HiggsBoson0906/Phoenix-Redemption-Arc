@@ -26,6 +26,14 @@ export const updateProgress = async ({ problemId, sheet, category, difficulty, s
 };
 
 /**
+ * Batch sync guest progress into MongoDB upon login/signup.
+ */
+export const syncProgressBatch = async (items) => {
+  const { data } = await api.post('/api/progress/sync', { items });
+  return data;
+};
+
+/**
  * Fetch stats summary from MongoDB.
  */
 export const fetchStats = async () => {

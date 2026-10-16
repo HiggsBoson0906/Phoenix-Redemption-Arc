@@ -10,8 +10,8 @@ const Navbar = ({ activeTab, setActiveTab, sheetStats }) => {
   const { isAuthenticated, user, logout, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isSheetPage = ['/questions', '/dashboard', '/dp', '/tree', '/graph'].includes(location.pathname);
-  const isLandingPage = location.pathname === '/';
+  const isSheetPage = ['/', '/questions', '/dashboard', '/dp', '/tree', '/graph'].includes(location.pathname);
+  const isLandingPage = false;
 
   const tabs = [
     {
@@ -61,7 +61,7 @@ const Navbar = ({ activeTab, setActiveTab, sheetStats }) => {
           <div className="brand-icon-wrap">
             <Flame size={20} className="brand-icon" />
           </div>
-          <span className="brand-title">AlgoAtlas</span>
+          <span className="brand-title">Phoenix Odyssey</span>
         </Link>
 
         {/* Mobile Hamburger Button */}
@@ -259,7 +259,7 @@ const Navbar = ({ activeTab, setActiveTab, sheetStats }) => {
             </button>
           </div>
         ) : (
-          <div className="desktop-user-profile" style={{ gap: 12 }}>
+          <div className="desktop-user-profile" style={{ gap: 10 }}>
             <Link
               to="/login"
               state={{ from: currentPath }}
@@ -268,12 +268,18 @@ const Navbar = ({ activeTab, setActiveTab, sheetStats }) => {
                 fontSize: 13.5,
                 fontWeight: 600,
                 textDecoration: 'none',
-                padding: '8px 14px',
+                padding: '7px 14px',
                 borderRadius: 8,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                background: 'var(--bg-card, rgba(255,255,255,0.06))',
+                border: '1px solid var(--border, rgba(255,255,255,0.12))',
                 transition: 'all 0.15s ease',
               }}
             >
-              Sign In
+              <LogIn size={14} />
+              <span>Log In</span>
             </Link>
             <Link
               to="/signup"

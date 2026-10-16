@@ -2,6 +2,7 @@ import express from 'express';
 import protect from '../middleware/authMiddleware.js';
 import {
   updateProgress,
+  batchSyncProgress,
   getAllProgress,
   getStats,
   getSheetProgress,
@@ -14,6 +15,7 @@ const router = express.Router();
 router.use(protect);
 
 router.post('/update', updateProgress);
+router.post('/sync', batchSyncProgress);
 router.get('/', getAllProgress);
 router.get('/stats', getStats);
 router.get('/sheet/:sheet', getSheetProgress);

@@ -61,7 +61,7 @@ app.use("/api/progress", progressRoutes);
 
 // Health Check
 app.get("/", (req, res) => {
-  res.send("AlgoAtlas Backend Running ✅");
+  res.send("Phoenix Odyssey Backend Running ✅");
 });
 
 // Catch-all 404 handler for undefined routes

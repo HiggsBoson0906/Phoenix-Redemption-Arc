@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log("MongoDB Connected — AlgoAtlas DB");
+    console.log("MongoDB Connected — Phoenix Odyssey DB");
   } catch (error) {
     console.error("MongoDB connection error:", error.message);
     process.exit(1);

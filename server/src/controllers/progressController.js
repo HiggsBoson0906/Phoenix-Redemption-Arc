@@ -66,6 +66,74 @@ export const updateProgress = async (req, res) => {
 };
 
 /**
+ * POST /api/progress/sync
+ * Bulk upsert progress items (e.g. migrating guest localStorage progress on login/signup).
+ */
+export const batchSyncProgress = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { items } = req.body;
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'No items to sync',
+        count: 0,
+      });
+    }
+
+    const bulkOps = items
+      .filter((item) => item && item.problemId)
+      .map((item) => {
+        const updateFields = {
+          sheet: item.sheet || 'dp',
+          category: item.category || '',
+          difficulty: item.difficulty || 'E',
+          status: item.status || 'Solved',
+          lastSolved: item.status === 'Solved' ? new Date() : null,
+        };
+
+        if (typeof item.bookmarked === 'boolean') updateFields.bookmarked = item.bookmarked;
+        if (typeof item.notes === 'string') updateFields.notes = item.notes;
+        if (typeof item.attemptCount === 'number') updateFields.attemptCount = item.attemptCount;
+
+        return {
+          updateOne: {
+            filter: { user: userId, problemId: item.problemId },
+            update: { $set: updateFields },
+            upsert: true,
+          },
+        };
+      });
+
+    if (bulkOps.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'No valid items to sync',
+        count: 0,
+      });
+    }
+
+    const result = await UserProgress.bulkWrite(bulkOps);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Guest progress successfully synced to cloud',
+      matchedCount: result.matchedCount,
+      upsertedCount: result.upsertedCount,
+      modifiedCount: result.modifiedCount,
+    });
+  } catch (error) {
+    console.error('Error in batchSyncProgress:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to batch sync progress',
+      error: error.message,
+    });
+  }
+};
+
+/**
  * GET /api/progress
  * Get all problem progress entries for the logged-in user.
  */

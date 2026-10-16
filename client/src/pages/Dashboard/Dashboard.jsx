@@ -4,6 +4,7 @@ import useAuth from '../../hooks/useAuth.js';
 import useProgress from '../../hooks/useProgress.js';
 
 import Navbar from '../../components/common/Navbar.jsx';
+import Footer from '../../components/common/Footer.jsx';
 import { Header } from '../../components/Header.jsx';
 import { StatsCard } from '../../components/StatsCard.jsx';
 import { Controls } from '../../components/Controls.jsx';
@@ -109,11 +110,6 @@ const Dashboard = ({ defaultTab }) => {
   }, [statsByDiff]);
 
   const handleToggleProblem = (slug, categoryName, diff) => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-      return;
-    }
-
     let catName = categoryName;
     let difficulty = diff;
 
@@ -159,11 +155,6 @@ const Dashboard = ({ defaultTab }) => {
   };
 
   const handleResetProgress = () => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-      return;
-    }
-
     const sheetSlugs = [];
     categories.forEach((cat) => {
       cat.problems.forEach(([slug]) => {
@@ -235,6 +226,8 @@ const Dashboard = ({ defaultTab }) => {
         onClose={() => setShowAuthModal(false)}
         message="Sign in to save your progress across all devices."
       />
+
+      <Footer />
     </div>
   );
 };

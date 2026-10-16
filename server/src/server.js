@@ -9,5 +9,5 @@ connectDB();
 const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
-  console.log(`AlgoAtlas server running on port ${PORT}`);
+  console.log(`Phoenix Odyssey server running on port ${PORT}`);
 });

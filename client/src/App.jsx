@@ -1,8 +1,5 @@
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/common/Navbar';
-import Footer from './components/common/Footer';
-import Home from './pages/Home/Home';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -11,29 +8,30 @@ import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import PublicRoute from './components/common/PublicRoute';
-function App() {
-  const location = useLocation();
-  const showNavbarFooter = location.pathname === '/';
 
+function App() {
   return (
     <AuthProvider>
       <ProgressProvider>
-        {showNavbarFooter && <Navbar />}
         <Routes>
-          {/* Public routes (redirect to questions if authenticated) */}
-          <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+          {/* Main Questions Sheets (Accessible to everyone) */}
+          <Route path="/" element={<Dashboard defaultTab="dp" />} />
+          <Route path="/questions" element={<Dashboard defaultTab="dp" />} />
+          <Route path="/dashboard" element={<Dashboard defaultTab="dp" />} />
+          <Route path="/dp" element={<Dashboard defaultTab="dp" />} />
+          <Route path="/tree" element={<Dashboard defaultTab="tree" />} />
+          <Route path="/graph" element={<Dashboard defaultTab="graph" />} />
+
+          {/* Authentication Routes */}
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-          
-          {/* Protected routes */}
-          <Route path="/questions" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/dp" element={<ProtectedRoute><Dashboard defaultTab="dp" /></ProtectedRoute>} />
-          <Route path="/tree" element={<ProtectedRoute><Dashboard defaultTab="tree" /></ProtectedRoute>} />
-          <Route path="/graph" element={<ProtectedRoute><Dashboard defaultTab="graph" /></ProtectedRoute>} />
+
+          {/* User Settings (Protected) */}
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+          {/* Fallback redirect */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        {showNavbarFooter && <Footer />}
       </ProgressProvider>
     </AuthProvider>
   );
