@@ -7,13 +7,17 @@ import useProgress from '@/hooks/useProgress.js';
 import Navbar from '@/components/common/Navbar.jsx';
 import { Header } from '@/components/Header.jsx';
 import { StatsCard } from '@/components/StatsCard.jsx';
+import { ActivityHeatmap } from '@/components/ActivityHeatmap.jsx';
 import { Controls } from '@/components/Controls.jsx';
 import { CategoryAccordion } from '@/components/CategoryAccordion.jsx';
 import AuthModal from '@/components/common/AuthModal.jsx';
+import BackupModal from '@/components/BackupModal.jsx';
+import MilestoneToast from '@/components/MilestoneToast.jsx';
 
 import { getDsaSheet, getAllDsaSheetsMeta, titleFromSlug } from '@/utils/dsaAdapter.js';
 import { getDsaSheetTheme } from '@/constants/themeColors';
 import { getPlatform } from '@/utils/url.js';
+import { triggerConfetti } from '@/utils/confetti.js';
 
 /**
  * DSAPage.jsx — Expanded AlgoAtlas DSA Problem Practice Platform.
@@ -21,7 +25,7 @@ import { getPlatform } from '@/utils/url.js';
  */
 const DSAPage = ({ defaultTab }) => {
   const { user, isAuthenticated } = useAuth();
-  const { checkedState, starredState, toggleProblem, toggleStarProblem, resetSheetProgress } = useProgress();
+  const { checkedState, starredState, solveHistory, toggleProblem, toggleStarProblem, resetSheetProgress } = useProgress();
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -41,10 +45,14 @@ const DSAPage = ({ defaultTab }) => {
 
   const [activeTab, setActiveTab] = useState(initialTab.toLowerCase());
   const [search, setSearch] = useState('');
-  const [diffFilter, setDiffFilter] = useState('ALL'); // 'ALL' | 'E' | 'M' | 'H'
+  const [selectedDiffs, setSelectedDiffs] = useState([]); // [] means ALL, or ['E'], ['E','M'], etc.
   const [platformFilter, setPlatformFilter] = useState('ALL');
   const [showStarredOnly, setShowStarredOnly] = useState(false);
+  const [hideSolved, setHideSolved] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showBackupModal, setShowBackupModal] = useState(false);
+  const [heatmapCollapsed, setHeatmapCollapsed] = useState(false);
+  const [milestone, setMilestone] = useState(null);
   const [openCategories, setOpenCategories] = useState({});
   const [gridExpanded, setGridExpanded] = useState(false);
 
@@ -218,6 +226,25 @@ const DSAPage = ({ defaultTab }) => {
     return statsByDiff.E.done + statsByDiff.M.done + statsByDiff.H.done;
   }, [statsByDiff]);
 
+  const handleToggleDiff = useCallback((diffKey) => {
+    if (diffKey === 'ALL') {
+      setSelectedDiffs([]);
+      return;
+    }
+    setSelectedDiffs((prev) => {
+      if (prev.length === 0 || prev.length === 3) {
+        return [diffKey];
+      }
+      if (prev.includes(diffKey)) {
+        const next = prev.filter((d) => d !== diffKey);
+        return next.length === 0 ? [] : next;
+      } else {
+        const next = [...prev, diffKey];
+        return next.length === 3 ? [] : next;
+      }
+    });
+  }, []);
+
   const handleToggleProblem = useCallback((slug, categoryName, diff) => {
     let catName = categoryName;
     let difficulty = diff;
@@ -233,12 +260,127 @@ const DSAPage = ({ defaultTab }) => {
       }
     }
 
+    const wasSolved = !!checkedState[slug];
+    const willBeSolved = !wasSolved;
+
     toggleProblem(slug, {
       sheet: activeTab,
       category: catName || '',
       difficulty: difficulty || 'E',
     });
-  }, [categories, toggleProblem, activeTab]);
+
+    // Milestone celebrations when solving a problem
+    if (willBeSolved) {
+      // 1. Check if category is completed
+      const targetCat = categories.find((c) => c.name === catName);
+      if (targetCat) {
+        const isCatComplete = targetCat.problems.every((p) => {
+          const s = Array.isArray(p) ? p[0] : p.slug;
+          return s === slug || !!checkedState[s];
+        });
+        if (isCatComplete) {
+          triggerConfetti({ particleCount: 75, spread: 75 });
+          setMilestone({
+            title: 'Category Completed! 🎉',
+            message: `Awesome! You solved all problems in "${catName}"!`,
+            icon: 'trophy',
+          });
+          return;
+        }
+      }
+
+      // 2. Check if total solved reaches milestone
+      const newTotal = Object.values(checkedState).filter(Boolean).length + 1;
+      if ([10, 25, 50, 100, 150, 200, 250, 300].includes(newTotal)) {
+        triggerConfetti({ particleCount: 100, spread: 90 });
+        setMilestone({
+          title: `Milestone: ${newTotal} Solved! 🚀`,
+          message: `Incredible dedication! You've solved ${newTotal} problems across AlgoAtlas!`,
+          icon: 'sparkles',
+        });
+      }
+    }
+  }, [categories, checkedState, toggleProblem, activeTab]);
+
+  const handlePickRandom = useCallback(() => {
+    const candidates = [];
+    categories.forEach((cat, catIdx) => {
+      cat.problems.forEach((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
+        const probTitle = Array.isArray(prob) ? (prob[2] || titleFromSlug(slug)) : (prob.title || titleFromSlug(slug));
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+        // Platform filter
+        if (platformFilter !== 'ALL') {
+          const p = getPlatform(url);
+          if (platformFilter === 'other') {
+            if (['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p)) return;
+          } else if (p !== platformFilter) {
+            return;
+          }
+        }
+
+        // Starred filter
+        if (showStarredOnly && !starredState[slug]) return;
+
+        // Multi-select difficulty filter
+        if (selectedDiffs.length > 0 && selectedDiffs.length < 3 && !selectedDiffs.includes(diff)) return;
+
+        // Search query
+        if (search) {
+          const query = search.toLowerCase();
+          if (!probTitle.toLowerCase().includes(query) && !slug.toLowerCase().includes(query)) return;
+        }
+
+        candidates.push({
+          slug,
+          title: probTitle,
+          diff,
+          catIdx,
+          catName: cat.name,
+          isSolved: !!checkedState[slug],
+        });
+      });
+    });
+
+    if (candidates.length === 0) {
+      setMilestone({
+        title: 'No Matching Problems',
+        message: 'Try clearing some difficulty, platform, or search filters.',
+        icon: 'sparkles',
+      });
+      return;
+    }
+
+    // Prefer unsolved candidates
+    const unsolvedCandidates = candidates.filter((c) => !c.isSolved);
+    const targetPool = unsolvedCandidates.length > 0 ? unsolvedCandidates : candidates;
+    const picked = targetPool[Math.floor(Math.random() * targetPool.length)];
+
+    // Open category
+    setOpenCategories((prev) => ({
+      ...prev,
+      [picked.catIdx]: true,
+    }));
+
+    // Scroll & pulse
+    setTimeout(() => {
+      const el = document.getElementById(`prob-${picked.slug}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('prob-highlight-pulse');
+        setTimeout(() => el.classList.remove('prob-highlight-pulse'), 3500);
+      }
+    }, 180);
+
+    const diffLabel = picked.diff === 'E' ? 'Easy' : picked.diff === 'M' ? 'Medium' : 'Hard';
+    setMilestone({
+      title: '🎯 Random Problem Picked!',
+      message: `${picked.title} (${diffLabel}) in ${picked.catName}`,
+      icon: 'sparkles',
+    });
+  }, [categories, platformFilter, showStarredOnly, starredState, selectedDiffs, search, checkedState]);
 
   const handleToggleStarProblem = useCallback((slug, categoryName, diff) => {
     let catName = categoryName;
@@ -416,21 +558,31 @@ const DSAPage = ({ defaultTab }) => {
         onCollapseAll={handleCollapseAll}
         onResetProgress={handleResetProgress}
         totalSolved={totalSolvedInCurrentSheet}
+        onOpenBackup={() => setShowBackupModal(true)}
       />
 
       <StatsCard statsByDiff={statsByDiff} />
 
+      <ActivityHeatmap
+        solveHistory={solveHistory}
+        isCollapsed={heatmapCollapsed}
+        onToggleCollapse={() => setHeatmapCollapsed((prev) => !prev)}
+      />
+
       <Controls
         search={search}
         setSearch={setSearch}
-        diffFilter={diffFilter}
-        setDiffFilter={setDiffFilter}
+        selectedDiffs={selectedDiffs}
+        onToggleDiff={handleToggleDiff}
         platformFilter={platformFilter}
         setPlatformFilter={setPlatformFilter}
         platformCounts={platformCounts}
         showStarredOnly={showStarredOnly}
         setShowStarredOnly={setShowStarredOnly}
         starredCount={totalStarredInCurrentSheet}
+        hideSolved={hideSolved}
+        setHideSolved={setHideSolved}
+        onPickRandom={handlePickRandom}
       />
 
       <div className="categories-list" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -440,6 +592,11 @@ const DSAPage = ({ defaultTab }) => {
             const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
             const probTitle = Array.isArray(prob) ? (prob[2] || titleFromSlug(slug)) : (prob.title || titleFromSlug(slug));
             const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+            // Hide solved filter
+            if (hideSolved && checkedState[slug]) {
+              return false;
+            }
 
             // Starred filter
             if (showStarredOnly && !starredState[slug]) {
@@ -456,7 +613,12 @@ const DSAPage = ({ defaultTab }) => {
               }
             }
 
-            const matchesDiff = diffFilter === 'ALL' || diff === diffFilter;
+            // Multi-select difficulty filter
+            const matchesDiff =
+              selectedDiffs.length === 0 ||
+              selectedDiffs.length === 3 ||
+              selectedDiffs.includes(diff);
+
             const titleLower = probTitle.toLowerCase();
             const query = search.toLowerCase();
             const matchesSearch =
@@ -464,9 +626,9 @@ const DSAPage = ({ defaultTab }) => {
             return matchesDiff && matchesSearch;
           });
 
-          // Keep category open when actively searching or filtering by difficulty/platform/starred
+          // Keep category open when actively searching or filtering by difficulty/platform/starred/hideSolved
           const isOpen =
-            search || diffFilter !== 'ALL' || platformFilter !== 'ALL' || showStarredOnly
+            search || selectedDiffs.length > 0 || platformFilter !== 'ALL' || showStarredOnly || hideSolved
               ? (filteredProblems.length > 0 ? (openCategories[catIndex] !== false) : false)
               : openCategories[catIndex] !== false;
 
@@ -488,6 +650,16 @@ const DSAPage = ({ defaultTab }) => {
           );
         })}
       </div>
+
+      <BackupModal
+        isOpen={showBackupModal}
+        onClose={() => setShowBackupModal(false)}
+      />
+
+      <MilestoneToast
+        notification={milestone}
+        onClose={() => setMilestone(null)}
+      />
 
       <AuthModal
         isOpen={showAuthModal}

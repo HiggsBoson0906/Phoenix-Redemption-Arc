@@ -24,7 +24,7 @@ const SHEET_INFO = {
   }
 };
 
-export function Header({ activeTab, onExpandAll, onCollapseAll, onResetProgress, totalSolved }) {
+export function Header({ activeTab, onExpandAll, onCollapseAll, onResetProgress, totalSolved, onOpenBackup }) {
   const matchedSheet = dsaSheets.find(s => s.slug === activeTab);
   const currentSheet = SHEET_INFO[activeTab] || {
     eyebrow: `${matchedSheet?.title || 'DSA'} Problem Sheet`,
@@ -60,6 +60,12 @@ export function Header({ activeTab, onExpandAll, onCollapseAll, onResetProgress,
           <ChevronUp size={14} />
           <span>Collapse All</span>
         </button>
+        {onOpenBackup && (
+          <button className="btn-secondary" onClick={onOpenBackup} title="Backup or restore progress as JSON">
+            <Database size={14} />
+            <span>Backup & Data</span>
+          </button>
+        )}
         <button
           className="btn-secondary danger"
           onClick={handleReset}
@@ -70,8 +76,6 @@ export function Header({ activeTab, onExpandAll, onCollapseAll, onResetProgress,
           <RotateCcw size={14} />
           <span>Reset Progress</span>
         </button>
-
-         
       </div>
     </header>
   );

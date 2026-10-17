@@ -1,10 +1,13 @@
 import React from 'react';
-import { Search, X, Globe, Layers, Star } from 'lucide-react';
+import { Search, X, Globe, Layers, Star, Shuffle, EyeOff } from 'lucide-react';
 import platformLogos from '@/constants/platforms';
 
 export function Controls({
   search,
   setSearch,
+  selectedDiffs = [],
+  onToggleDiff,
+  // Fallbacks for backward compatibility
   diffFilter,
   setDiffFilter,
   platformFilter = 'ALL',
@@ -13,6 +16,9 @@ export function Controls({
   showStarredOnly = false,
   setShowStarredOnly,
   starredCount,
+  hideSolved = false,
+  setHideSolved,
+  onPickRandom,
 }) {
   const platformDefs = [
     { key: 'ALL', label: 'All', icon: null },
@@ -29,9 +35,24 @@ export function Controls({
     (p) => p.key === 'ALL' || (platformCounts && platformCounts[p.key] > 0) || platformFilter === p.key
   );
 
+  // Multi-select difficulty determination
+  const isAllDiffs =
+    !selectedDiffs ||
+    selectedDiffs.length === 0 ||
+    selectedDiffs.length === 3 ||
+    (diffFilter && diffFilter === 'ALL');
+
+  const handleDiffClick = (diffKey) => {
+    if (onToggleDiff) {
+      onToggleDiff(diffKey);
+    } else if (setDiffFilter) {
+      setDiffFilter(diffKey);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-      <div className="controls-container" style={{ margin: 0 }}>
+      <div className="controls-container" style={{ margin: 0, flexWrap: 'wrap', gap: '10px' }}>
         <div className="search-wrap">
           <Search className="search-icon" size={16} />
           <input
@@ -45,22 +66,29 @@ export function Controls({
           )}
         </div>
 
-        <div className="diff-filter">
+        <div className="diff-filter" style={{ flexWrap: 'wrap' }}>
           {['ALL', 'E', 'M', 'H'].map((diffKey) => {
             const labels = { ALL: 'ALL', E: 'EASY', M: 'MEDIUM', H: 'HARD' };
-            const isActive = diffFilter === diffKey;
+            const isActive =
+              diffKey === 'ALL'
+                ? isAllDiffs
+                : !isAllDiffs &&
+                  (selectedDiffs.includes(diffKey) || diffFilter === diffKey);
+
             return (
               <button
                 key={diffKey}
                 type="button"
                 className={`chip ${isActive ? 'active' : ''}`}
-                onClick={() => setDiffFilter(diffKey)}
+                onClick={() => handleDiffClick(diffKey)}
+                title={diffKey === 'ALL' ? "Show all difficulties" : `Toggle ${labels[diffKey]} difficulty`}
               >
                 {labels[diffKey]}
               </button>
             );
           })}
 
+          {/* Starred Toggle */}
           {setShowStarredOnly && (
             <button
               type="button"
@@ -80,6 +108,32 @@ export function Controls({
                   {starredCount}
                 </span>
               )}
+            </button>
+          )}
+
+          {/* Hide Solved / Unsolved Only Toggle */}
+          {setHideSolved && (
+            <button
+              type="button"
+              className={`chip hide-solved-chip ${hideSolved ? 'active' : ''}`}
+              onClick={() => setHideSolved(!hideSolved)}
+              title={hideSolved ? "Show all questions" : "Show only unsolved questions"}
+            >
+              <EyeOff size={13} />
+              <span>UNSOLVED ONLY</span>
+            </button>
+          )}
+
+          {/* Pick Random Unsolved Question */}
+          {onPickRandom && (
+            <button
+              type="button"
+              className="chip random-pick-chip"
+              onClick={onPickRandom}
+              title="Pick a random unsolved problem from active filters"
+            >
+              <Shuffle size={13} />
+              <span>PICK RANDOM</span>
             </button>
           )}
         </div>

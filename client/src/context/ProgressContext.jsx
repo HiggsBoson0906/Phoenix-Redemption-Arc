@@ -6,6 +6,7 @@ const ProgressContext = createContext(null);
 
 const GUEST_STORAGE_KEY = 'phoenix_guest_progress';
 const GUEST_STARRED_STORAGE_KEY = 'phoenix_starred_problems';
+const GUEST_SOLVE_HISTORY_KEY = 'phoenix_solve_history';
 
 const getGuestProgress = () => {
   try {
@@ -59,6 +60,24 @@ const clearGuestStarred = () => {
   }
 };
 
+const getGuestSolveHistory = () => {
+  try {
+    const raw = localStorage.getItem(GUEST_SOLVE_HISTORY_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    console.error('Failed to parse guest solve history from localStorage:', e);
+    return {};
+  }
+};
+
+const saveGuestSolveHistory = (data) => {
+  try {
+    localStorage.setItem(GUEST_SOLVE_HISTORY_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error('Failed to save guest solve history to localStorage:', e);
+  }
+};
+
 export const ProgressProvider = ({ children }) => {
   const { isAuthenticated, loading: authLoading } = useAuth();
 
@@ -79,6 +98,11 @@ export const ProgressProvider = ({ children }) => {
     return getGuestStarred();
   });
 
+  // Map of YYYY-MM-DD -> count of solved problems
+  const [solveHistory, setSolveHistory] = useState(() => {
+    return getGuestSolveHistory();
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const isSyncingRef = useRef(false);
@@ -96,6 +120,7 @@ export const ProgressProvider = ({ children }) => {
       });
       setCheckedState(stateMap);
       setStarredState(getGuestStarred());
+      setSolveHistory(getGuestSolveHistory());
       return;
     }
 
@@ -162,9 +187,14 @@ export const ProgressProvider = ({ children }) => {
       if (data.success && Array.isArray(data.progress)) {
         const stateMap = {};
         const starredMap = {};
+        const historyMap = {};
         data.progress.forEach((item) => {
           if (item.status === 'Solved') {
             stateMap[item.problemId] = true;
+            if (item.lastSolved) {
+              const d = new Date(item.lastSolved).toISOString().split('T')[0];
+              historyMap[d] = (historyMap[d] || 0) + 1;
+            }
           }
           if (item.bookmarked) {
             starredMap[item.problemId] = true;
@@ -172,6 +202,7 @@ export const ProgressProvider = ({ children }) => {
         });
         setCheckedState(stateMap);
         setStarredState(starredMap);
+        setSolveHistory(historyMap);
       }
     } catch (err) {
       console.error('Failed to fetch progress from MongoDB:', err);
@@ -199,6 +230,23 @@ export const ProgressProvider = ({ children }) => {
         ...prev,
         [slug]: nextSolvedState,
       }));
+
+      // Update solve history for heatmap
+      const today = new Date().toISOString().split('T')[0];
+      setSolveHistory((prev) => {
+        const updated = { ...prev };
+        if (nextSolvedState) {
+          updated[today] = (updated[today] || 0) + 1;
+        } else {
+          if (updated[today] && updated[today] > 1) {
+            updated[today] -= 1;
+          } else {
+            delete updated[today];
+          }
+        }
+        if (!isAuthenticated) saveGuestSolveHistory(updated);
+        return updated;
+      });
 
       // 2. Persist to Cloud if logged in
       if (isAuthenticated) {
@@ -326,14 +374,88 @@ export const ProgressProvider = ({ children }) => {
     [isAuthenticated, loadProgress]
   );
 
+  // ── One-Click Backup Export & Import ────────────────────────────────────
+  const exportBackup = useCallback(() => {
+    const backupData = {
+      app: 'AlgoAtlas',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      checkedState,
+      starredState,
+      solveHistory,
+    };
+    const jsonStr = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.href = url;
+    link.download = `algoatlas_backup_${dateStr}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [checkedState, starredState, solveHistory]);
+
+  const importBackup = useCallback(async (fileContent) => {
+    try {
+      const data = typeof fileContent === 'string' ? JSON.parse(fileContent) : fileContent;
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid JSON format');
+      }
+
+      const newChecked = { ...checkedState, ...(data.checkedState || {}) };
+      const newStarred = { ...starredState, ...(data.starredState || {}) };
+      const newHistory = { ...solveHistory, ...(data.solveHistory || {}) };
+
+      setCheckedState(newChecked);
+      setStarredState(newStarred);
+      setSolveHistory(newHistory);
+
+      // Persist to local storage
+      const guestProgress = getGuestProgress();
+      Object.keys(newChecked).forEach((slug) => {
+        if (newChecked[slug]) {
+          guestProgress[slug] = guestProgress[slug] || { problemId: slug, status: 'Solved' };
+        } else {
+          delete guestProgress[slug];
+        }
+      });
+      saveGuestProgress(guestProgress);
+      saveGuestStarred(newStarred);
+      saveGuestSolveHistory(newHistory);
+
+      // If authenticated, sync with server
+      if (isAuthenticated) {
+        const itemsToSync = Object.keys(newChecked).map((slug) => ({
+          problemId: slug,
+          sheet: 'dp',
+          status: newChecked[slug] ? 'Solved' : 'Not Started',
+          bookmarked: !!newStarred[slug],
+        }));
+        if (itemsToSync.length > 0) {
+          await progressService.syncProgressBatch(itemsToSync).catch(console.warn);
+        }
+      }
+
+      return { success: true, count: Object.keys(newChecked).filter(k => newChecked[k]).length };
+    } catch (err) {
+      console.error('Failed to import backup:', err);
+      return { success: false, error: err.message };
+    }
+  }, [checkedState, starredState, solveHistory, isAuthenticated]);
+
   const value = {
     checkedState,
     starredState,
+    solveHistory,
     loading,
     error,
     toggleProblem,
     toggleStarProblem,
     resetSheetProgress,
+    exportBackup,
+    importBackup,
     refetchProgress: loadProgress,
   };
 

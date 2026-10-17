@@ -25,7 +25,7 @@ export function ProblemRow({
   const displayDiff = DIFF_NAME[diff] || (diff === 'E' ? 'Easy' : diff === 'M' ? 'Medium' : diff === 'H' ? 'Hard' : diff);
 
   return (
-    <div className={`problem-row ${isChecked ? 'done' : ''} ${isStarred ? 'is-starred' : ''}`}>
+    <div id={`prob-${slug}`} className={`problem-row ${isChecked ? 'done' : ''} ${isStarred ? 'is-starred' : ''}`}>
       <div
         className={`custom-checkbox ${isChecked ? 'checked' : ''}`}
         onClick={() => onToggle(slug)}

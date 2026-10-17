@@ -20,9 +20,10 @@ export default function CompanyPrepPage() {
   const theme = useMemo(() => getCompanyTheme(activeSlug), [activeSlug]);
 
   const [search, setSearch] = useState('');
-  const [diffFilter, setDiffFilter] = useState('ALL');
+  const [selectedDiffs, setSelectedDiffs] = useState([]);
   const [platformFilter, setPlatformFilter] = useState('ALL');
   const [showStarredOnly, setShowStarredOnly] = useState(false);
+  const [hideSolved, setHideSolved] = useState(false);
   const [openMap, setOpenMap] = useState({ 0: true });
 
   const toggleAccordion = (idx) => {
@@ -37,6 +38,23 @@ export default function CompanyPrepPage() {
 
   const handleCollapseAll = () => {
     setOpenMap({});
+  };
+
+  const handleToggleDiff = (diffKey) => {
+    if (diffKey === 'ALL') {
+      setSelectedDiffs([]);
+      return;
+    }
+    setSelectedDiffs((prev) => {
+      if (prev.length === 0 || prev.length === 3) return [diffKey];
+      if (prev.includes(diffKey)) {
+        const next = prev.filter((d) => d !== diffKey);
+        return next.length === 0 ? [] : next;
+      } else {
+        const next = [...prev, diffKey];
+        return next.length === 3 ? [] : next;
+      }
+    });
   };
 
   // Platform counts in current company sheet (respecting showStarredOnly)
@@ -123,6 +141,51 @@ export default function CompanyPrepPage() {
     });
   };
 
+  const handlePickRandom = () => {
+    const candidates = [];
+    currentSheet.categories.forEach((cat, catIdx) => {
+      cat.problems.forEach((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
+        const title = Array.isArray(prob) ? (prob[2] || slug) : (prob.title || slug);
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+        if (showStarredOnly && !starredState[slug]) return;
+        if (platformFilter !== 'ALL') {
+          const p = getPlatform(url);
+          if (platformFilter === 'other') {
+            if (['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p)) return;
+          } else if (p !== platformFilter) {
+            return;
+          }
+        }
+        if (selectedDiffs.length > 0 && selectedDiffs.length < 3 && !selectedDiffs.includes(diff)) return;
+        if (search) {
+          const q = search.toLowerCase();
+          if (!title.toLowerCase().includes(q) && !slug.toLowerCase().includes(q)) return;
+        }
+
+        candidates.push({ slug, title, diff, catIdx, isSolved: !!checkedState[slug] });
+      });
+    });
+
+    if (candidates.length === 0) return;
+    const unsolved = candidates.filter((c) => !c.isSolved);
+    const pool = unsolved.length > 0 ? unsolved : candidates;
+    const picked = pool[Math.floor(Math.random() * pool.length)];
+
+    setOpenMap((prev) => ({ ...prev, [picked.catIdx]: true }));
+
+    setTimeout(() => {
+      const el = document.getElementById(`prob-${picked.slug}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('prob-highlight-pulse');
+        setTimeout(() => el.classList.remove('prob-highlight-pulse'), 3500);
+      }
+    }, 180);
+  };
+
   // Filtered categories
   const filteredCategories = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -133,6 +196,7 @@ export default function CompanyPrepPage() {
         const title = Array.isArray(prob) ? (prob[2] || slug) : (prob.title || slug);
         const url = Array.isArray(prob) ? prob[3] : prob.url;
 
+        if (hideSolved && checkedState[slug]) return false;
         if (showStarredOnly && !starredState[slug]) return false;
 
         if (platformFilter !== 'ALL') {
@@ -144,7 +208,11 @@ export default function CompanyPrepPage() {
           }
         }
 
-        const matchesDiff = diffFilter === 'ALL' || diff === diffFilter;
+        const matchesDiff =
+          selectedDiffs.length === 0 ||
+          selectedDiffs.length === 3 ||
+          selectedDiffs.includes(diff);
+
         const matchesSearch = !q || title.toLowerCase().includes(q) || slug.toLowerCase().includes(q);
         return matchesDiff && matchesSearch;
       });
@@ -153,8 +221,8 @@ export default function CompanyPrepPage() {
         originalIndex: catIdx,
         filteredProblems: filtered,
       };
-    }).filter(c => !search && diffFilter === 'ALL' && platformFilter === 'ALL' && !showStarredOnly ? true : c.filteredProblems.length > 0);
-  }, [currentSheet, search, diffFilter, platformFilter, showStarredOnly, starredState]);
+    }).filter(c => !search && selectedDiffs.length === 0 && platformFilter === 'ALL' && !showStarredOnly && !hideSolved ? true : c.filteredProblems.length > 0);
+  }, [currentSheet, search, selectedDiffs, platformFilter, showStarredOnly, hideSolved, starredState, checkedState]);
 
   return (
     <div className="wrap" data-sheet="company">
@@ -312,18 +380,21 @@ export default function CompanyPrepPage() {
             </div>
           </div>
 
-          {/* Controls Bar: Search, Difficulty, Platform, Starred */}
+          {/* Controls Bar: Search, Difficulty, Platform, Starred, Unsolved Only, Pick Random */}
           <Controls
             search={search}
             setSearch={setSearch}
-            diffFilter={diffFilter}
-            setDiffFilter={setDiffFilter}
+            selectedDiffs={selectedDiffs}
+            onToggleDiff={handleToggleDiff}
             platformFilter={platformFilter}
             setPlatformFilter={setPlatformFilter}
             platformCounts={platformCounts}
             showStarredOnly={showStarredOnly}
             setShowStarredOnly={setShowStarredOnly}
             starredCount={totalStarredInSheet}
+            hideSolved={hideSolved}
+            setHideSolved={setHideSolved}
+            onPickRandom={handlePickRandom}
           />
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '16px', marginTop: '-12px' }}>
