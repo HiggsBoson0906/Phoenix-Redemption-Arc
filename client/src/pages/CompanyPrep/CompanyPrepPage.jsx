@@ -6,6 +6,8 @@ import { getCompanyMetaList, getCompanySheet } from '@/utils/companyAdapter';
 import { getCompanyTheme } from '@/constants/themeColors';
 import Navbar from '@/components/common/Navbar.jsx';
 import { CategoryAccordion } from '@/components/CategoryAccordion';
+import { Controls } from '@/components/Controls';
+import { getPlatform } from '@/utils/url';
 
 export default function CompanyPrepPage() {
   const { companySlug } = useParams();
@@ -19,6 +21,7 @@ export default function CompanyPrepPage() {
 
   const [search, setSearch] = useState('');
   const [diffFilter, setDiffFilter] = useState('ALL');
+  const [platformFilter, setPlatformFilter] = useState('ALL');
   const [openMap, setOpenMap] = useState({ 0: true });
 
   const toggleAccordion = (idx) => {
@@ -35,16 +38,54 @@ export default function CompanyPrepPage() {
     setOpenMap({});
   };
 
-  // Stats calculation
-  const totalInSheet = useMemo(() => {
-    return currentSheet.categories.reduce((acc, cat) => acc + cat.problems.length, 0);
+  // Platform counts in current company sheet
+  const platformCounts = useMemo(() => {
+    const counts = { ALL: 0, lc: 0, cses: 0, cf: 0, atcoder: 0, gfg: 0, interviewbit: 0, other: 0 };
+    currentSheet.categories.forEach((cat) => {
+      cat.problems.forEach((prob) => {
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+        const p = getPlatform(url);
+        counts.ALL++;
+        if (counts[p] !== undefined) {
+          counts[p]++;
+        } else {
+          counts.other++;
+        }
+      });
+    });
+    return counts;
   }, [currentSheet]);
+
+  // Stats calculation respecting platformFilter
+  const totalInSheet = useMemo(() => {
+    return currentSheet.categories.reduce((acc, cat) => {
+      return acc + cat.problems.filter((prob) => {
+        if (platformFilter === 'ALL') return true;
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+        const p = getPlatform(url);
+        if (platformFilter === 'other') {
+          return !['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p);
+        }
+        return p === platformFilter;
+      }).length;
+    }, 0);
+  }, [currentSheet, platformFilter]);
 
   const doneInSheet = useMemo(() => {
     return currentSheet.categories.reduce((acc, cat) => {
-      return acc + cat.problems.filter(([slug]) => !!checkedState[slug]).length;
+      return acc + cat.problems.filter((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+        if (!checkedState[slug]) return false;
+        if (platformFilter === 'ALL') return true;
+        const p = getPlatform(url);
+        if (platformFilter === 'other') {
+          return !['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p);
+        }
+        return p === platformFilter;
+      }).length;
     }, 0);
-  }, [currentSheet, checkedState]);
+  }, [currentSheet, checkedState, platformFilter]);
 
   const pctDone = totalInSheet > 0 ? Math.round((doneInSheet / totalInSheet) * 100) : 0;
 
@@ -52,7 +93,21 @@ export default function CompanyPrepPage() {
   const filteredCategories = useMemo(() => {
     const q = search.trim().toLowerCase();
     return currentSheet.categories.map((cat, catIdx) => {
-      const filtered = cat.problems.filter(([slug, diff, title]) => {
+      const filtered = cat.problems.filter((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
+        const title = Array.isArray(prob) ? (prob[2] || slug) : (prob.title || slug);
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+        if (platformFilter !== 'ALL') {
+          const p = getPlatform(url);
+          if (platformFilter === 'other') {
+            if (['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p)) return false;
+          } else if (p !== platformFilter) {
+            return false;
+          }
+        }
+
         const matchesDiff = diffFilter === 'ALL' || diff === diffFilter;
         const matchesSearch = !q || title.toLowerCase().includes(q) || slug.toLowerCase().includes(q);
         return matchesDiff && matchesSearch;
@@ -62,8 +117,8 @@ export default function CompanyPrepPage() {
         originalIndex: catIdx,
         filteredProblems: filtered,
       };
-    }).filter(c => !search && diffFilter === 'ALL' ? true : c.filteredProblems.length > 0);
-  }, [currentSheet, search, diffFilter]);
+    }).filter(c => !search && diffFilter === 'ALL' && platformFilter === 'ALL' ? true : c.filteredProblems.length > 0);
+  }, [currentSheet, search, diffFilter, platformFilter]);
 
   return (
     <div className="wrap" data-sheet="company">
@@ -221,61 +276,34 @@ export default function CompanyPrepPage() {
             </div>
           </div>
 
-          {/* Controls Bar: Search, Difficulty Chips, Expand/Collapse */}
-          <div className="controls-container" style={{ marginBottom: '20px' }}>
-            <div className="search-wrap">
-              <Search className="search-icon" size={16} />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search company problems..."
-              />
-              {search && (
-                <X className="clear-icon" size={16} onClick={() => setSearch('')} title="Clear search" />
-              )}
-            </div>
+          {/* Controls Bar: Search, Difficulty, Platform */}
+          <Controls
+            search={search}
+            setSearch={setSearch}
+            diffFilter={diffFilter}
+            setDiffFilter={setDiffFilter}
+            platformFilter={platformFilter}
+            setPlatformFilter={setPlatformFilter}
+            platformCounts={platformCounts}
+          />
 
-            <div className="diff-filter">
-              {['ALL', 'E', 'M', 'H'].map((diffKey) => {
-                const labels = { ALL: 'ALL', E: 'EASY', M: 'MEDIUM', H: 'HARD' };
-                const isActive = diffFilter === diffKey;
-                return (
-                  <button
-                    key={diffKey}
-                    className={`chip ${isActive ? 'active' : ''}`}
-                    onClick={() => setDiffFilter(diffKey)}
-                    style={isActive ? {
-                      background: theme.accent,
-                      color: '#090a0f',
-                      boxShadow: `0 2px 10px ${theme.glow}`,
-                      fontWeight: '700'
-                    } : {}}
-                  >
-                    {labels[diffKey]}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button
-                onClick={handleExpandAll}
-                className="chip"
-                style={{ padding: '6px 12px', fontSize: '0.82rem' }}
-                title="Expand all categories"
-              >
-                Expand All
-              </button>
-              <button
-                onClick={handleCollapseAll}
-                className="chip"
-                style={{ padding: '6px 12px', fontSize: '0.82rem' }}
-                title="Collapse all categories"
-              >
-                Collapse
-              </button>
-            </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '16px', marginTop: '-12px' }}>
+            <button
+              onClick={handleExpandAll}
+              className="chip"
+              style={{ padding: '6px 12px', fontSize: '0.82rem' }}
+              title="Expand all categories"
+            >
+              Expand All
+            </button>
+            <button
+              onClick={handleCollapseAll}
+              className="chip"
+              style={{ padding: '6px 12px', fontSize: '0.82rem' }}
+              title="Collapse all categories"
+            >
+              Collapse
+            </button>
           </div>
 
           {/* Categories Accordion */}
@@ -294,6 +322,7 @@ export default function CompanyPrepPage() {
                 filteredProblems={cat.filteredProblems}
                 checkedState={checkedState}
                 onToggleProblem={toggleProblem}
+                platformFilter={platformFilter}
               />
             ))
           )}

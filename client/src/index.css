@@ -807,6 +807,91 @@ body {
   background: var(--panel-hover);
 }
 
+/* ─── Platform Filter Bar ─────────────────────────── */
+.platform-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 6px 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.platform-filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  user-select: none;
+  padding-right: 8px;
+  border-right: 1px solid var(--line);
+}
+
+.platform-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.platform-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.platform-chip:hover:not(.active) {
+  color: var(--text);
+  background: var(--panel-hover);
+  border-color: var(--line);
+}
+
+.platform-chip.active {
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+[data-theme="dark"] .platform-chip.active {
+  color: #000000;
+}
+
+.platform-badge {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.85;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(128, 128, 128, 0.18);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.platform-chip.active .platform-badge {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="light"] .platform-chip.active .platform-badge {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 /* ─── Category Accordion Header ───────────────────── */
 .category-list {
   display: flex;
@@ -821,7 +906,16 @@ body {
   overflow: hidden;
   transition:
     border-color 0.2s,
-    box-shadow 0.2s;
+    box-shadow 0.2s,
+    opacity 0.2s;
+}
+
+.category-card.category-empty-filter {
+  opacity: 0.52;
+}
+
+.category-card.category-empty-filter:hover {
+  opacity: 0.88;
 }
 
 .category-card:hover {

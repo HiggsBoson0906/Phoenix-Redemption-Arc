@@ -13,6 +13,7 @@ import AuthModal from '@/components/common/AuthModal.jsx';
 
 import { getDsaSheet, getAllDsaSheetsMeta, titleFromSlug } from '@/utils/dsaAdapter.js';
 import { getDsaSheetTheme } from '@/constants/themeColors';
+import { getPlatform } from '@/utils/url.js';
 
 /**
  * DSAPage.jsx — Expanded AlgoAtlas DSA Problem Practice Platform.
@@ -41,6 +42,7 @@ const DSAPage = ({ defaultTab }) => {
   const [activeTab, setActiveTab] = useState(initialTab.toLowerCase());
   const [search, setSearch] = useState('');
   const [diffFilter, setDiffFilter] = useState('ALL'); // 'ALL' | 'E' | 'M' | 'H'
+  const [platformFilter, setPlatformFilter] = useState('ALL');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [openCategories, setOpenCategories] = useState({});
   const [gridExpanded, setGridExpanded] = useState(false);
@@ -100,7 +102,25 @@ const DSAPage = ({ defaultTab }) => {
     return currentSheet.categories || [];
   }, [currentSheet]);
 
-  // Calculate live stats for all sheets (for pills & nav)
+  // Platform problem counts for current sheet
+  const platformCounts = useMemo(() => {
+    const counts = { ALL: 0, lc: 0, cses: 0, cf: 0, atcoder: 0, gfg: 0, interviewbit: 0, other: 0 };
+    categories.forEach((cat) => {
+      cat.problems.forEach((prob) => {
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+        const p = getPlatform(url);
+        counts.ALL++;
+        if (counts[p] !== undefined) {
+          counts[p]++;
+        } else {
+          counts.other++;
+        }
+      });
+    });
+    return counts;
+  }, [categories]);
+
+  // Calculate live stats for all sheets (for pills & nav), respecting platformFilter
   const sheetStats = useMemo(() => {
     const statsMap = {};
     allSheets.forEach((s) => {
@@ -110,6 +130,17 @@ const DSAPage = ({ defaultTab }) => {
       (d.categories || []).forEach((cat) => {
         cat.problems.forEach((prob) => {
           const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+          const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+          if (platformFilter !== 'ALL') {
+            const p = getPlatform(url);
+            if (platformFilter === 'other') {
+              if (['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p)) return;
+            } else if (p !== platformFilter) {
+              return;
+            }
+          }
+
           total++;
           if (checkedState[slug]) done++;
         });
@@ -117,9 +148,9 @@ const DSAPage = ({ defaultTab }) => {
       statsMap[s.slug] = { done, total };
     });
     return statsMap;
-  }, [allSheets, checkedState]);
+  }, [allSheets, checkedState, platformFilter]);
 
-  // Stats by difficulty for current active sheet
+  // Stats by difficulty for current active sheet, respecting platformFilter
   const statsByDiff = useMemo(() => {
     const stats = {
       E: { done: 0, total: 0 },
@@ -131,6 +162,17 @@ const DSAPage = ({ defaultTab }) => {
       cat.problems.forEach((prob) => {
         const slug = Array.isArray(prob) ? prob[0] : prob.slug;
         const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+        if (platformFilter !== 'ALL') {
+          const p = getPlatform(url);
+          if (platformFilter === 'other') {
+            if (['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p)) return;
+          } else if (p !== platformFilter) {
+            return;
+          }
+        }
+
         if (stats[diff]) {
           stats[diff].total++;
           if (checkedState[slug]) stats[diff].done++;
@@ -139,7 +181,7 @@ const DSAPage = ({ defaultTab }) => {
     });
 
     return stats;
-  }, [categories, checkedState]);
+  }, [categories, checkedState, platformFilter]);
 
   const totalSolvedInCurrentSheet = useMemo(() => {
     return statsByDiff.E.done + statsByDiff.M.done + statsByDiff.H.done;
@@ -330,6 +372,9 @@ const DSAPage = ({ defaultTab }) => {
         setSearch={setSearch}
         diffFilter={diffFilter}
         setDiffFilter={setDiffFilter}
+        platformFilter={platformFilter}
+        setPlatformFilter={setPlatformFilter}
+        platformCounts={platformCounts}
       />
 
       <div className="categories-list" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -338,6 +383,18 @@ const DSAPage = ({ defaultTab }) => {
             const slug = Array.isArray(prob) ? prob[0] : prob.slug;
             const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
             const probTitle = Array.isArray(prob) ? (prob[2] || titleFromSlug(slug)) : (prob.title || titleFromSlug(slug));
+            const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+            // Platform filter
+            if (platformFilter !== 'ALL') {
+              const p = getPlatform(url);
+              if (platformFilter === 'other') {
+                if (['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p)) return false;
+              } else if (p !== platformFilter) {
+                return false;
+              }
+            }
+
             const matchesDiff = diffFilter === 'ALL' || diff === diffFilter;
             const titleLower = probTitle.toLowerCase();
             const query = search.toLowerCase();
@@ -346,10 +403,10 @@ const DSAPage = ({ defaultTab }) => {
             return matchesDiff && matchesSearch;
           });
 
-          // Keep category open when actively searching or filtering by difficulty
+          // Keep category open when actively searching or filtering by difficulty/platform
           const isOpen =
-            search || diffFilter !== 'ALL'
-              ? true
+            search || diffFilter !== 'ALL' || platformFilter !== 'ALL'
+              ? (filteredProblems.length > 0 ? (openCategories[catIndex] !== false) : false)
               : openCategories[catIndex] !== false;
 
           return (
@@ -362,6 +419,7 @@ const DSAPage = ({ defaultTab }) => {
               filteredProblems={filteredProblems}
               checkedState={checkedState}
               onToggleProblem={(slug) => handleToggleProblem(slug, category.name)}
+              platformFilter={platformFilter}
             />
           );
         })}

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { ProblemRow } from './ProblemRow';
+import { getPlatform } from '@/utils/url';
 
 export function CategoryAccordion({
   category,
@@ -9,15 +10,32 @@ export function CategoryAccordion({
   onToggleOpen,
   filteredProblems,
   checkedState,
-  onToggleProblem
+  onToggleProblem,
+  platformFilter = 'ALL',
 }) {
-  const totalInCat = category.problems.length;
-  const doneInCat = category.problems.filter(([slug]) => !!checkedState[slug]).length;
+  // Problems in this category matching the active platform filter
+  const platformProblems = useMemo(() => {
+    if (!platformFilter || platformFilter === 'ALL') return category.problems;
+    return category.problems.filter((prob) => {
+      const url = Array.isArray(prob) ? prob[3] : prob.url;
+      const p = getPlatform(url);
+      if (platformFilter === 'other') {
+        return !['lc', 'cf', 'cses', 'atcoder', 'gfg'].includes(p);
+      }
+      return p === platformFilter;
+    });
+  }, [category.problems, platformFilter]);
+
+  const totalInCat = platformProblems.length;
+  const doneInCat = platformProblems.filter((prob) => {
+    const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+    return !!checkedState[slug];
+  }).length;
   const pct = totalInCat > 0 ? (doneInCat / totalInCat) * 100 : 0;
   const indexLabel = String(catIndex + 1).padStart(2, '0');
 
   return (
-    <div className="category-card">
+    <div className={`category-card ${totalInCat === 0 ? 'category-empty-filter' : ''}`}>
       <div className="cat-header" onClick={onToggleOpen}>
         <div className="cat-index">{indexLabel}</div>
         <div className="cat-name">{category.name}</div>
