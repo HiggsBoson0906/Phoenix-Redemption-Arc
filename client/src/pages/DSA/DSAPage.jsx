@@ -21,7 +21,7 @@ import { getPlatform } from '@/utils/url.js';
  */
 const DSAPage = ({ defaultTab }) => {
   const { user, isAuthenticated } = useAuth();
-  const { checkedState, toggleProblem, resetSheetProgress } = useProgress();
+  const { checkedState, starredState, toggleProblem, toggleStarProblem, resetSheetProgress } = useProgress();
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -43,6 +43,7 @@ const DSAPage = ({ defaultTab }) => {
   const [search, setSearch] = useState('');
   const [diffFilter, setDiffFilter] = useState('ALL'); // 'ALL' | 'E' | 'M' | 'H'
   const [platformFilter, setPlatformFilter] = useState('ALL');
+  const [showStarredOnly, setShowStarredOnly] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [openCategories, setOpenCategories] = useState({});
   const [gridExpanded, setGridExpanded] = useState(false);
@@ -102,11 +103,14 @@ const DSAPage = ({ defaultTab }) => {
     return currentSheet.categories || [];
   }, [currentSheet]);
 
-  // Platform problem counts for current sheet
+  // Platform problem counts for current sheet (reflecting showStarredOnly if active)
   const platformCounts = useMemo(() => {
     const counts = { ALL: 0, lc: 0, cses: 0, cf: 0, atcoder: 0, gfg: 0, interviewbit: 0, other: 0 };
     categories.forEach((cat) => {
       cat.problems.forEach((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        if (showStarredOnly && !starredState[slug]) return;
+
         const url = Array.isArray(prob) ? prob[3] : prob.url;
         const p = getPlatform(url);
         counts.ALL++;
@@ -118,9 +122,32 @@ const DSAPage = ({ defaultTab }) => {
       });
     });
     return counts;
-  }, [categories]);
+  }, [categories, showStarredOnly, starredState]);
 
-  // Calculate live stats for all sheets (for pills & nav), respecting platformFilter
+  // Total starred questions in current sheet matching platform filter
+  const totalStarredInCurrentSheet = useMemo(() => {
+    let count = 0;
+    categories.forEach((cat) => {
+      cat.problems.forEach((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+        if (platformFilter !== 'ALL') {
+          const p = getPlatform(url);
+          if (platformFilter === 'other') {
+            if (['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p)) return;
+          } else if (p !== platformFilter) {
+            return;
+          }
+        }
+
+        if (starredState[slug]) count++;
+      });
+    });
+    return count;
+  }, [categories, starredState, platformFilter]);
+
+  // Calculate live stats for all sheets (for pills & nav), respecting platformFilter & showStarredOnly
   const sheetStats = useMemo(() => {
     const statsMap = {};
     allSheets.forEach((s) => {
@@ -131,6 +158,8 @@ const DSAPage = ({ defaultTab }) => {
         cat.problems.forEach((prob) => {
           const slug = Array.isArray(prob) ? prob[0] : prob.slug;
           const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+          if (showStarredOnly && !starredState[slug]) return;
 
           if (platformFilter !== 'ALL') {
             const p = getPlatform(url);
@@ -148,9 +177,9 @@ const DSAPage = ({ defaultTab }) => {
       statsMap[s.slug] = { done, total };
     });
     return statsMap;
-  }, [allSheets, checkedState, platformFilter]);
+  }, [allSheets, checkedState, starredState, platformFilter, showStarredOnly]);
 
-  // Stats by difficulty for current active sheet, respecting platformFilter
+  // Stats by difficulty for current active sheet, respecting platformFilter & showStarredOnly
   const statsByDiff = useMemo(() => {
     const stats = {
       E: { done: 0, total: 0 },
@@ -163,6 +192,8 @@ const DSAPage = ({ defaultTab }) => {
         const slug = Array.isArray(prob) ? prob[0] : prob.slug;
         const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
         const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+        if (showStarredOnly && !starredState[slug]) return;
 
         if (platformFilter !== 'ALL') {
           const p = getPlatform(url);
@@ -181,7 +212,7 @@ const DSAPage = ({ defaultTab }) => {
     });
 
     return stats;
-  }, [categories, checkedState, platformFilter]);
+  }, [categories, checkedState, starredState, platformFilter, showStarredOnly]);
 
   const totalSolvedInCurrentSheet = useMemo(() => {
     return statsByDiff.E.done + statsByDiff.M.done + statsByDiff.H.done;
@@ -208,6 +239,28 @@ const DSAPage = ({ defaultTab }) => {
       difficulty: difficulty || 'E',
     });
   }, [categories, toggleProblem, activeTab]);
+
+  const handleToggleStarProblem = useCallback((slug, categoryName, diff) => {
+    let catName = categoryName;
+    let difficulty = diff;
+
+    if (!catName || !difficulty) {
+      for (const cat of categories) {
+        const found = cat.problems.find((p) => (Array.isArray(p) ? p[0] : p.slug) === slug);
+        if (found) {
+          catName = catName || cat.name;
+          difficulty = difficulty || (Array.isArray(found) ? found[1] : found.diff);
+          break;
+        }
+      }
+    }
+
+    toggleStarProblem(slug, {
+      sheet: activeTab,
+      category: catName || '',
+      difficulty: difficulty || 'E',
+    });
+  }, [categories, toggleStarProblem, activeTab]);
 
   const handleToggleCategory = (index) => {
     setOpenCategories((prev) => ({
@@ -375,6 +428,9 @@ const DSAPage = ({ defaultTab }) => {
         platformFilter={platformFilter}
         setPlatformFilter={setPlatformFilter}
         platformCounts={platformCounts}
+        showStarredOnly={showStarredOnly}
+        setShowStarredOnly={setShowStarredOnly}
+        starredCount={totalStarredInCurrentSheet}
       />
 
       <div className="categories-list" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -384,6 +440,11 @@ const DSAPage = ({ defaultTab }) => {
             const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
             const probTitle = Array.isArray(prob) ? (prob[2] || titleFromSlug(slug)) : (prob.title || titleFromSlug(slug));
             const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+            // Starred filter
+            if (showStarredOnly && !starredState[slug]) {
+              return false;
+            }
 
             // Platform filter
             if (platformFilter !== 'ALL') {
@@ -403,9 +464,9 @@ const DSAPage = ({ defaultTab }) => {
             return matchesDiff && matchesSearch;
           });
 
-          // Keep category open when actively searching or filtering by difficulty/platform
+          // Keep category open when actively searching or filtering by difficulty/platform/starred
           const isOpen =
-            search || diffFilter !== 'ALL' || platformFilter !== 'ALL'
+            search || diffFilter !== 'ALL' || platformFilter !== 'ALL' || showStarredOnly
               ? (filteredProblems.length > 0 ? (openCategories[catIndex] !== false) : false)
               : openCategories[catIndex] !== false;
 
@@ -420,6 +481,9 @@ const DSAPage = ({ defaultTab }) => {
               checkedState={checkedState}
               onToggleProblem={(slug) => handleToggleProblem(slug, category.name)}
               platformFilter={platformFilter}
+              starredState={starredState}
+              onToggleStar={(slug) => handleToggleStarProblem(slug, category.name)}
+              showStarredOnly={showStarredOnly}
             />
           );
         })}

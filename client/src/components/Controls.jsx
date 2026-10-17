@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, X, Globe, Layers } from 'lucide-react';
+import { Search, X, Globe, Layers, Star } from 'lucide-react';
 import platformLogos from '@/constants/platforms';
 
 export function Controls({
@@ -10,6 +10,9 @@ export function Controls({
   platformFilter = 'ALL',
   setPlatformFilter,
   platformCounts = {},
+  showStarredOnly = false,
+  setShowStarredOnly,
+  starredCount,
 }) {
   const platformDefs = [
     { key: 'ALL', label: 'All', icon: null },
@@ -57,6 +60,28 @@ export function Controls({
               </button>
             );
           })}
+
+          {setShowStarredOnly && (
+            <button
+              type="button"
+              className={`chip star-toggle-chip ${showStarredOnly ? 'active' : ''}`}
+              onClick={() => setShowStarredOnly(!showStarredOnly)}
+              title={showStarredOnly ? "Show all questions" : "Show only starred questions"}
+            >
+              <Star
+                size={13}
+                fill={showStarredOnly ? '#fbbf24' : 'none'}
+                stroke={showStarredOnly ? '#fbbf24' : 'currentColor'}
+                strokeWidth={showStarredOnly ? 1.5 : 2}
+              />
+              <span>STARRED</span>
+              {starredCount !== undefined && (
+                <span className="platform-badge" style={{ marginLeft: '4px' }}>
+                  {starredCount}
+                </span>
+              )}
+            </button>
+          )}
         </div>
       </div>
 

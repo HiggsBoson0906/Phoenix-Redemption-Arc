@@ -1,10 +1,19 @@
 import React from 'react';
-import { Check, ExternalLink } from 'lucide-react';
+import { Check, ExternalLink, Star } from 'lucide-react';
 import { titleFromSlug, DIFF_NAME } from '../data/dpData';
 import { extractProblemName, getPlatform, PLATFORM_LABELS } from '@/utils/url';
 import platformLogos from '@/constants/platforms';
 
-export function ProblemRow({ slug, diff, isChecked, onToggle, title: customTitle, url: customUrl }) {
+export function ProblemRow({
+  slug,
+  diff,
+  isChecked,
+  onToggle,
+  isStarred = false,
+  onToggleStar,
+  title: customTitle,
+  url: customUrl,
+}) {
   const problemUrl = customUrl || `https://leetcode.com/problems/${slug}/`;
   const platform = getPlatform(problemUrl);
   const platformLogo = platformLogos[platform];
@@ -16,7 +25,7 @@ export function ProblemRow({ slug, diff, isChecked, onToggle, title: customTitle
   const displayDiff = DIFF_NAME[diff] || (diff === 'E' ? 'Easy' : diff === 'M' ? 'Medium' : diff === 'H' ? 'Hard' : diff);
 
   return (
-    <div className={`problem-row ${isChecked ? 'done' : ''}`}>
+    <div className={`problem-row ${isChecked ? 'done' : ''} ${isStarred ? 'is-starred' : ''}`}>
       <div
         className={`custom-checkbox ${isChecked ? 'checked' : ''}`}
         onClick={() => onToggle(slug)}
@@ -24,6 +33,25 @@ export function ProblemRow({ slug, diff, isChecked, onToggle, title: customTitle
       >
         {isChecked && <Check size={14} strokeWidth={3} />}
       </div>
+
+      <button
+        type="button"
+        className={`star-btn ${isStarred ? 'starred' : ''}`}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onToggleStar?.(slug);
+        }}
+        title={isStarred ? "Remove star" : "Star this question"}
+        aria-label={isStarred ? "Remove star" : "Star this question"}
+      >
+        <Star
+          size={16}
+          fill={isStarred ? '#fbbf24' : 'none'}
+          stroke={isStarred ? '#fbbf24' : 'currentColor'}
+          strokeWidth={isStarred ? 1.5 : 2}
+        />
+      </button>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '22px' }}>
         {platformLogo ? (

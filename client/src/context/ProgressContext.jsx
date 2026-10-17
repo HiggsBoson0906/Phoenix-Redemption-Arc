@@ -5,6 +5,7 @@ import * as progressService from '../services/progressService.js';
 const ProgressContext = createContext(null);
 
 const GUEST_STORAGE_KEY = 'phoenix_guest_progress';
+const GUEST_STARRED_STORAGE_KEY = 'phoenix_starred_problems';
 
 const getGuestProgress = () => {
   try {
@@ -32,6 +33,32 @@ const clearGuestProgress = () => {
   }
 };
 
+const getGuestStarred = () => {
+  try {
+    const raw = localStorage.getItem(GUEST_STARRED_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    console.error('Failed to parse guest starred from localStorage:', e);
+    return {};
+  }
+};
+
+const saveGuestStarred = (data) => {
+  try {
+    localStorage.setItem(GUEST_STARRED_STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error('Failed to save guest starred to localStorage:', e);
+  }
+};
+
+const clearGuestStarred = () => {
+  try {
+    localStorage.removeItem(GUEST_STARRED_STORAGE_KEY);
+  } catch (e) {
+    console.error('Failed to clear guest starred:', e);
+  }
+};
+
 export const ProgressProvider = ({ children }) => {
   const { isAuthenticated, loading: authLoading } = useAuth();
 
@@ -45,6 +72,11 @@ export const ProgressProvider = ({ children }) => {
       }
     });
     return stateMap;
+  });
+
+  // Map of problemId -> boolean (true if bookmarked / starred)
+  const [starredState, setStarredState] = useState(() => {
+    return getGuestStarred();
   });
 
   const [loading, setLoading] = useState(false);
@@ -63,6 +95,7 @@ export const ProgressProvider = ({ children }) => {
         }
       });
       setCheckedState(stateMap);
+      setStarredState(getGuestStarred());
       return;
     }
 
@@ -103,16 +136,42 @@ export const ProgressProvider = ({ children }) => {
         }
       }
 
-      // 2. Fetch authenticated user's complete progress from MongoDB
+      // 2. Sync any guest starred problems into MongoDB upon login
+      const guestStarred = getGuestStarred();
+      const guestStarredSlugs = Object.keys(guestStarred).filter((slug) => guestStarred[slug]);
+      if (guestStarredSlugs.length > 0) {
+        try {
+          await Promise.all(
+            guestStarredSlugs.map((slug) =>
+              progressService.updateProgress({
+                problemId: slug,
+                sheet: 'dp',
+                status: guest[slug]?.status === 'Solved' ? 'Solved' : 'Not Started',
+                bookmarked: true,
+              })
+            )
+          );
+          clearGuestStarred();
+        } catch (starredErr) {
+          console.warn('Failed to migrate some guest starred problems:', starredErr);
+        }
+      }
+
+      // 3. Fetch authenticated user's complete progress from MongoDB
       const data = await progressService.fetchProgress();
       if (data.success && Array.isArray(data.progress)) {
         const stateMap = {};
+        const starredMap = {};
         data.progress.forEach((item) => {
           if (item.status === 'Solved') {
             stateMap[item.problemId] = true;
           }
+          if (item.bookmarked) {
+            starredMap[item.problemId] = true;
+          }
         });
         setCheckedState(stateMap);
+        setStarredState(starredMap);
       }
     } catch (err) {
       console.error('Failed to fetch progress from MongoDB:', err);
@@ -150,6 +209,7 @@ export const ProgressProvider = ({ children }) => {
             category: metadata.category || '',
             difficulty: metadata.difficulty || 'E',
             status: nextStatus,
+            bookmarked: !!starredState[slug],
           });
         } catch (err) {
           console.error(`Failed to update problem ${slug} in MongoDB`, err);
@@ -176,7 +236,63 @@ export const ProgressProvider = ({ children }) => {
         saveGuestProgress(guest);
       }
     },
-    [checkedState, isAuthenticated]
+    [checkedState, starredState, isAuthenticated]
+  );
+
+  // ── Toggle star / bookmark on problem (Guest or Cloud) ───────────────────
+  const toggleStarProblem = useCallback(
+    async (slug, metadata = {}) => {
+      const isCurrentlyStarred = !!starredState[slug];
+      const nextStarredState = !isCurrentlyStarred;
+
+      // 1. Optimistic UI update immediately
+      setStarredState((prev) => {
+        const next = { ...prev };
+        if (nextStarredState) {
+          next[slug] = true;
+        } else {
+          delete next[slug];
+        }
+        return next;
+      });
+
+      // 2. Persist to Cloud if logged in
+      if (isAuthenticated) {
+        try {
+          const isSolved = !!checkedState[slug];
+          await progressService.updateProgress({
+            problemId: slug,
+            sheet: metadata.sheet || 'dp',
+            category: metadata.category || '',
+            difficulty: metadata.difficulty || 'E',
+            status: isSolved ? 'Solved' : 'Not Started',
+            bookmarked: nextStarredState,
+          });
+        } catch (err) {
+          console.error(`Failed to update bookmark for ${slug} in MongoDB`, err);
+          // Revert optimistic update on failure
+          setStarredState((prev) => {
+            const next = { ...prev };
+            if (isCurrentlyStarred) {
+              next[slug] = true;
+            } else {
+              delete next[slug];
+            }
+            return next;
+          });
+        }
+      } else {
+        // 3. Persist to Browser Local Storage if guest
+        const guestStarred = getGuestStarred();
+        if (nextStarredState) {
+          guestStarred[slug] = true;
+        } else {
+          delete guestStarred[slug];
+        }
+        saveGuestStarred(guestStarred);
+      }
+    },
+    [starredState, checkedState, isAuthenticated]
   );
 
   // ── Reset sheet progress (Guest or Cloud) ──────────────────────────────────
@@ -212,9 +328,11 @@ export const ProgressProvider = ({ children }) => {
 
   const value = {
     checkedState,
+    starredState,
     loading,
     error,
     toggleProblem,
+    toggleStarProblem,
     resetSheetProgress,
     refetchProgress: loadProgress,
   };

@@ -12,7 +12,7 @@ import { getPlatform } from '@/utils/url';
 export default function CompanyPrepPage() {
   const { companySlug } = useParams();
   const navigate = useNavigate();
-  const { checkedState, toggleProblem } = useProgress();
+  const { checkedState, starredState, toggleProblem, toggleStarProblem } = useProgress();
 
   const companies = useMemo(() => getCompanyMetaList(), []);
   const activeSlug = (companySlug || companies[0]?.slug || 'de-shaw').toLowerCase();
@@ -22,6 +22,7 @@ export default function CompanyPrepPage() {
   const [search, setSearch] = useState('');
   const [diffFilter, setDiffFilter] = useState('ALL');
   const [platformFilter, setPlatformFilter] = useState('ALL');
+  const [showStarredOnly, setShowStarredOnly] = useState(false);
   const [openMap, setOpenMap] = useState({ 0: true });
 
   const toggleAccordion = (idx) => {
@@ -38,11 +39,14 @@ export default function CompanyPrepPage() {
     setOpenMap({});
   };
 
-  // Platform counts in current company sheet
+  // Platform counts in current company sheet (respecting showStarredOnly)
   const platformCounts = useMemo(() => {
     const counts = { ALL: 0, lc: 0, cses: 0, cf: 0, atcoder: 0, gfg: 0, interviewbit: 0, other: 0 };
     currentSheet.categories.forEach((cat) => {
       cat.problems.forEach((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        if (showStarredOnly && !starredState[slug]) return;
+
         const url = Array.isArray(prob) ? prob[3] : prob.url;
         const p = getPlatform(url);
         counts.ALL++;
@@ -54,12 +58,32 @@ export default function CompanyPrepPage() {
       });
     });
     return counts;
-  }, [currentSheet]);
+  }, [currentSheet, showStarredOnly, starredState]);
 
-  // Stats calculation respecting platformFilter
+  // Total starred questions in current sheet
+  const totalStarredInSheet = useMemo(() => {
+    return currentSheet.categories.reduce((acc, cat) => {
+      return acc + cat.problems.filter((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
+        if (!starredState[slug]) return false;
+        if (platformFilter === 'ALL') return true;
+        const p = getPlatform(url);
+        if (platformFilter === 'other') {
+          return !['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p);
+        }
+        return p === platformFilter;
+      }).length;
+    }, 0);
+  }, [currentSheet, starredState, platformFilter]);
+
+  // Stats calculation respecting platformFilter and showStarredOnly
   const totalInSheet = useMemo(() => {
     return currentSheet.categories.reduce((acc, cat) => {
       return acc + cat.problems.filter((prob) => {
+        const slug = Array.isArray(prob) ? prob[0] : prob.slug;
+        if (showStarredOnly && !starredState[slug]) return false;
+
         if (platformFilter === 'ALL') return true;
         const url = Array.isArray(prob) ? prob[3] : prob.url;
         const p = getPlatform(url);
@@ -69,15 +93,17 @@ export default function CompanyPrepPage() {
         return p === platformFilter;
       }).length;
     }, 0);
-  }, [currentSheet, platformFilter]);
+  }, [currentSheet, platformFilter, showStarredOnly, starredState]);
 
   const doneInSheet = useMemo(() => {
     return currentSheet.categories.reduce((acc, cat) => {
       return acc + cat.problems.filter((prob) => {
         const slug = Array.isArray(prob) ? prob[0] : prob.slug;
-        const url = Array.isArray(prob) ? prob[3] : prob.url;
         if (!checkedState[slug]) return false;
+        if (showStarredOnly && !starredState[slug]) return false;
+
         if (platformFilter === 'ALL') return true;
+        const url = Array.isArray(prob) ? prob[3] : prob.url;
         const p = getPlatform(url);
         if (platformFilter === 'other') {
           return !['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p);
@@ -85,9 +111,17 @@ export default function CompanyPrepPage() {
         return p === platformFilter;
       }).length;
     }, 0);
-  }, [currentSheet, checkedState, platformFilter]);
+  }, [currentSheet, checkedState, platformFilter, showStarredOnly, starredState]);
 
   const pctDone = totalInSheet > 0 ? Math.round((doneInSheet / totalInSheet) * 100) : 0;
+
+  const handleToggleStarProblem = (slug, categoryName, diff) => {
+    toggleStarProblem(slug, {
+      sheet: 'company',
+      category: categoryName || '',
+      difficulty: diff || 'E',
+    });
+  };
 
   // Filtered categories
   const filteredCategories = useMemo(() => {
@@ -98,6 +132,8 @@ export default function CompanyPrepPage() {
         const diff = Array.isArray(prob) ? prob[1] : (prob.diff || 'E');
         const title = Array.isArray(prob) ? (prob[2] || slug) : (prob.title || slug);
         const url = Array.isArray(prob) ? prob[3] : prob.url;
+
+        if (showStarredOnly && !starredState[slug]) return false;
 
         if (platformFilter !== 'ALL') {
           const p = getPlatform(url);
@@ -117,8 +153,8 @@ export default function CompanyPrepPage() {
         originalIndex: catIdx,
         filteredProblems: filtered,
       };
-    }).filter(c => !search && diffFilter === 'ALL' && platformFilter === 'ALL' ? true : c.filteredProblems.length > 0);
-  }, [currentSheet, search, diffFilter, platformFilter]);
+    }).filter(c => !search && diffFilter === 'ALL' && platformFilter === 'ALL' && !showStarredOnly ? true : c.filteredProblems.length > 0);
+  }, [currentSheet, search, diffFilter, platformFilter, showStarredOnly, starredState]);
 
   return (
     <div className="wrap" data-sheet="company">
@@ -276,7 +312,7 @@ export default function CompanyPrepPage() {
             </div>
           </div>
 
-          {/* Controls Bar: Search, Difficulty, Platform */}
+          {/* Controls Bar: Search, Difficulty, Platform, Starred */}
           <Controls
             search={search}
             setSearch={setSearch}
@@ -285,6 +321,9 @@ export default function CompanyPrepPage() {
             platformFilter={platformFilter}
             setPlatformFilter={setPlatformFilter}
             platformCounts={platformCounts}
+            showStarredOnly={showStarredOnly}
+            setShowStarredOnly={setShowStarredOnly}
+            starredCount={totalStarredInSheet}
           />
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '16px', marginTop: '-12px' }}>
@@ -309,7 +348,9 @@ export default function CompanyPrepPage() {
           {/* Categories Accordion */}
           {filteredCategories.length === 0 ? (
             <div className="empty-msg">
-              No company problems matched your search or filter.
+              {showStarredOnly
+                ? 'No starred questions found for this company.'
+                : 'No company problems matched your search or filter.'}
             </div>
           ) : (
             filteredCategories.map((cat) => (
@@ -323,6 +364,9 @@ export default function CompanyPrepPage() {
                 checkedState={checkedState}
                 onToggleProblem={toggleProblem}
                 platformFilter={platformFilter}
+                starredState={starredState}
+                onToggleStar={(slug) => handleToggleStarProblem(slug, cat.name)}
+                showStarredOnly={showStarredOnly}
               />
             ))
           )}

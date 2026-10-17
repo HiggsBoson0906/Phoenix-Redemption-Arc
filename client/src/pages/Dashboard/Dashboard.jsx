@@ -21,7 +21,7 @@ import { GRAPH_CATEGORIES } from '../../data/graphData.js';
  */
 const Dashboard = ({ defaultTab }) => {
   const { user, isAuthenticated, logout } = useAuth();
-  const { checkedState, toggleProblem, resetSheetProgress } = useProgress();
+  const { checkedState, starredState, toggleProblem, toggleStarProblem, resetSheetProgress } = useProgress();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -216,6 +216,8 @@ const Dashboard = ({ defaultTab }) => {
               filteredProblems={filteredProblems}
               checkedState={checkedState}
               onToggleProblem={(slug) => handleToggleProblem(slug, category.name)}
+              starredState={starredState}
+              onToggleStar={(slug) => toggleStarProblem(slug, { sheet: activeTab, category: category.name })}
             />
           );
         })}

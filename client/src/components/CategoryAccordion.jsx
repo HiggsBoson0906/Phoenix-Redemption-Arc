@@ -12,22 +12,34 @@ export function CategoryAccordion({
   checkedState,
   onToggleProblem,
   platformFilter = 'ALL',
+  starredState = {},
+  onToggleStar,
+  showStarredOnly = false,
 }) {
-  // Problems in this category matching the active platform filter
-  const platformProblems = useMemo(() => {
-    if (!platformFilter || platformFilter === 'ALL') return category.problems;
+  // Problems in this category matching active platform & starred filter
+  const visibleCategoryProblems = useMemo(() => {
     return category.problems.filter((prob) => {
+      const slug = Array.isArray(prob) ? prob[0] : prob.slug;
       const url = Array.isArray(prob) ? prob[3] : prob.url;
-      const p = getPlatform(url);
-      if (platformFilter === 'other') {
-        return !['lc', 'cf', 'cses', 'atcoder', 'gfg'].includes(p);
-      }
-      return p === platformFilter;
-    });
-  }, [category.problems, platformFilter]);
 
-  const totalInCat = platformProblems.length;
-  const doneInCat = platformProblems.filter((prob) => {
+      if (showStarredOnly && !starredState[slug]) {
+        return false;
+      }
+
+      if (platformFilter !== 'ALL') {
+        const p = getPlatform(url);
+        if (platformFilter === 'other') {
+          if (['lc', 'cf', 'cses', 'atcoder', 'gfg', 'interviewbit'].includes(p)) return false;
+        } else if (p !== platformFilter) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [category.problems, platformFilter, showStarredOnly, starredState]);
+
+  const totalInCat = visibleCategoryProblems.length;
+  const doneInCat = visibleCategoryProblems.filter((prob) => {
     const slug = Array.isArray(prob) ? prob[0] : prob.slug;
     return !!checkedState[slug];
   }).length;
@@ -56,7 +68,9 @@ export function CategoryAccordion({
         <div className="cat-body">
           {filteredProblems.length === 0 ? (
             <div className="empty-msg" style={{ border: 'none', borderRadius: 0, padding: '20px' }}>
-              No problems match your filters in this category.
+              {showStarredOnly
+                ? 'No starred problems in this category.'
+                : 'No problems match your filters in this category.'}
             </div>
           ) : (
             filteredProblems.map((prob) => {
@@ -74,6 +88,8 @@ export function CategoryAccordion({
                   url={url}
                   isChecked={!!checkedState[slug]}
                   onToggle={onToggleProblem}
+                  isStarred={!!starredState[slug]}
+                  onToggleStar={onToggleStar}
                 />
               );
             })
