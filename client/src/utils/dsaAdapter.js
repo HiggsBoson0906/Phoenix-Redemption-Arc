@@ -109,13 +109,26 @@ export function inferDifficulty(slug, indexInSub = 0, totalInSub = 1) {
  * [ { name: string, description?: string, problems: [ [slug, diff, title, url] ] } ]
  */
 export function convertSectionsToAlgoAtlasCategories(sections) {
-  return sections.map((sec, secIdx) => {
+  const existingSlugs = new Set();
+  const existingUrls = new Set();
+
+  return sections.map((sec) => {
     const rawLinks = sec.links || [];
-    const problems = rawLinks.map((url, linkIdx) => {
+    const problems = [];
+    rawLinks.forEach((url, linkIdx) => {
       const slug = extractSlugFromUrl(url);
+      const norm = normalizeUrl(url);
+      const slugKey = slug ? slug.toLowerCase() : '';
+
+      if (slugKey && existingSlugs.has(slugKey)) return;
+      if (norm && existingUrls.has(norm)) return;
+
+      if (slugKey) existingSlugs.add(slugKey);
+      if (norm) existingUrls.add(norm);
+
       const title = getProblemTitle(url, slug);
       const diff = inferDifficulty(slug, linkIdx, rawLinks.length);
-      return [slug, diff, title, url];
+      problems.push([slug, diff, title, url]);
     });
 
     return {
@@ -123,7 +136,7 @@ export function convertSectionsToAlgoAtlasCategories(sections) {
       description: sec.description || '',
       problems,
     };
-  });
+  }).filter(cat => cat.problems.length > 0);
 }
 
 /**
@@ -131,50 +144,252 @@ export function convertSectionsToAlgoAtlasCategories(sections) {
  * Keeps all original problems intact and appends only unique non-duplicated questions
  * (e.g., Codeforces, AtCoder, CSES, GfG, etc.).
  */
-function mergeUniqueSections(baseCategories, additionalSections) {
+/**
+ * Merges PrepForge sections into existing AlgoAtlas categories while deduplicating problems.
+ * Unifies duplicate and overlapping categories into single coherent topics.
+ */
+function mergeUnifiedSections(baseCategories, additionalSections, categoryMapping = {}, canonicalOrder = []) {
   const existingSlugs = new Set();
   const existingUrls = new Set();
 
+  const categoryMap = new Map();
+
+  const getCanonicalName = (rawName) => {
+    return categoryMapping[rawName] || rawName;
+  };
+
+  const getOrCreateCategory = (canonicalName, description = '') => {
+    if (!categoryMap.has(canonicalName)) {
+      categoryMap.set(canonicalName, {
+        name: canonicalName,
+        description: description || '',
+        problems: [],
+      });
+    }
+    return categoryMap.get(canonicalName);
+  };
+
+  // 1. Process base categories
   baseCategories.forEach(cat => {
+    const canonicalName = getCanonicalName(cat.name);
+    const targetCat = getOrCreateCategory(canonicalName, cat.description);
+
     cat.problems.forEach(p => {
       const slug = Array.isArray(p) ? p[0] : p.slug;
       const url = Array.isArray(p) ? p[3] : p.url;
-      if (slug) existingSlugs.add(slug.toLowerCase());
-      if (url) existingUrls.add(normalizeUrl(url));
+      const slugKey = slug ? slug.toLowerCase() : '';
+      const urlKey = url ? normalizeUrl(url) : '';
+
+      if (slugKey && existingSlugs.has(slugKey)) return;
+      if (urlKey && existingUrls.has(urlKey)) return;
+
+      if (slugKey) existingSlugs.add(slugKey);
+      if (urlKey) existingUrls.add(urlKey);
+
+      targetCat.problems.push(p);
     });
   });
 
-  const additionalCategories = [];
-
+  // 2. Process additional sections
   additionalSections.forEach(sec => {
-    const rawLinks = sec.links || [];
-    const uniqueProblems = [];
+    const canonicalName = getCanonicalName(sec.title);
+    const targetCat = getOrCreateCategory(canonicalName, sec.description);
 
+    const rawLinks = sec.links || [];
     rawLinks.forEach((url, linkIdx) => {
       const slug = extractSlugFromUrl(url);
       const norm = normalizeUrl(url);
+      const slugKey = slug ? slug.toLowerCase() : '';
 
-      if (!existingSlugs.has(slug.toLowerCase()) && !existingUrls.has(norm)) {
-        existingSlugs.add(slug.toLowerCase());
-        existingUrls.add(norm);
+      if (slugKey && existingSlugs.has(slugKey)) return;
+      if (norm && existingUrls.has(norm)) return;
 
-        const title = getProblemTitle(url, slug);
-        const diff = inferDifficulty(slug, linkIdx, rawLinks.length);
-        uniqueProblems.push([slug, diff, title, url]);
-      }
+      if (slugKey) existingSlugs.add(slugKey);
+      if (norm) existingUrls.add(norm);
+
+      const title = getProblemTitle(url, slug);
+      const diff = inferDifficulty(slug, linkIdx, rawLinks.length);
+      targetCat.problems.push([slug, diff, title, url]);
     });
+  });
 
-    if (uniqueProblems.length > 0) {
-      additionalCategories.push({
-        name: sec.title,
-        description: sec.description || '',
-        problems: uniqueProblems,
-      });
+  // 3. Order categories deterministically
+  const orderedList = [];
+  const addedNames = new Set();
+
+  canonicalOrder.forEach(name => {
+    if (categoryMap.has(name)) {
+      const cat = categoryMap.get(name);
+      if (cat.problems.length > 0) {
+        orderedList.push(cat);
+      }
+      addedNames.add(name);
     }
   });
 
-  return [...baseCategories, ...additionalCategories];
+  categoryMap.forEach((cat, name) => {
+    if (!addedNames.has(name) && cat.problems.length > 0) {
+      orderedList.push(cat);
+    }
+  });
+
+  return orderedList;
 }
+
+// DP Mappings & Canonical Order
+const DP_CATEGORY_MAPPING = {
+  'Linear DP': 'Linear DP — One-Dimensional Recurrences',
+  '1. Linear DP — One-Dimensional Recurrences': 'Linear DP — One-Dimensional Recurrences',
+  'Classic DP — Kadane\'s Algorithm': 'Kadane\'s Algorithm & Maximum Subarray Family',
+  '2. Kadane & Maximum Subarray Family': 'Kadane\'s Algorithm & Maximum Subarray Family',
+  'Knapsack': '0/1 Knapsack & Subset Sum Family',
+  '3. 0/1 Knapsack & Subset Sum Family': '0/1 Knapsack & Subset Sum Family',
+  '4. Unbounded Knapsack & Coin Change Family': 'Unbounded Knapsack & Coin Change Family',
+  'Classic DP — LIS Family': 'Longest Increasing Subsequence (LIS) Family',
+  '5. Longest Increasing Subsequence (LIS) Family': 'Longest Increasing Subsequence (LIS) Family',
+  'Classic DP — LCS Family': 'Two-Sequence DP — LCS & Edit Distance Family',
+  '6. Two-Sequence DP — LCS & Edit Distance Family': 'Two-Sequence DP — LCS & Edit Distance Family',
+  'Classic DP — 2D Grid Traversal': 'Grid & Multi-Dimensional DP',
+  'Multi-Dimensional DP': 'Grid & Multi-Dimensional DP',
+  '7. Grid & 2D Path DP': 'Grid & Multi-Dimensional DP',
+  '8. State-Machine DP — Buy & Sell Stock Family': 'State-Machine DP — Buy & Sell Stock Family',
+  '9. Partition DP & Palindrome Partitioning Family': 'Partition DP & Palindrome Partitioning Family',
+  'Interval DP': 'Interval DP — MCM & Burst Balloons',
+  '10. Interval DP — MCM & Burst Balloons': 'Interval DP — MCM & Burst Balloons',
+  '11. Game Theory DP — Stone Game Family': 'Game Theory DP — Stone Game Family',
+  'Bitmask DP': 'Bitmask DP',
+  '12. Bitmask DP': 'Bitmask DP',
+  'Digit DP': 'Digit DP',
+  '13. Digit DP': 'Digit DP',
+  'DP on Trees': 'DP on Trees',
+  '14. DP on Trees': 'DP on Trees',
+  'Graph DP': 'DP on Graphs & DAGs',
+  '15. DP on Graphs & DAGs': 'DP on Graphs & DAGs',
+  'Probability DP': 'Probability & Expected-Value DP',
+  '16. Probability & Expected-Value DP': 'Probability & Expected-Value DP',
+  '17. Counting & Combinatorial DP': 'Counting & Combinatorial DP',
+  '18. Tiling DP — Domino & Polyomino Counting': 'Tiling DP — Domino & Polyomino Counting',
+  'String DP': 'String DP & Regex Matching',
+  '19. String DP & Regex Matching': 'String DP & Regex Matching',
+  '20. DP Optimisations — Deque, Matrix Power, Meet in the Middle': 'DP Optimisations — Deque, Matrix Power, Meet in the Middle',
+  'Classic DP — Cumulative Sum': 'Prefix Sums & Subarray DP Techniques',
+  'Classic DP — Hashmap (Subarray)': 'Prefix Sums & Subarray DP Techniques',
+  'DP + Alpha (Tricks / DS)': 'Advanced DP Techniques & Memoization',
+  'Insertion DP': 'Advanced DP Techniques & Memoization',
+  'Memoization': 'Advanced DP Techniques & Memoization',
+  'Binary Lifting': 'Advanced DP Techniques & Memoization',
+  'Math': 'Advanced DP Techniques & Memoization',
+};
+
+const DP_CANONICAL_ORDER = [
+  'Linear DP — One-Dimensional Recurrences',
+  'Kadane\'s Algorithm & Maximum Subarray Family',
+  '0/1 Knapsack & Subset Sum Family',
+  'Unbounded Knapsack & Coin Change Family',
+  'Longest Increasing Subsequence (LIS) Family',
+  'Two-Sequence DP — LCS & Edit Distance Family',
+  'Grid & Multi-Dimensional DP',
+  'State-Machine DP — Buy & Sell Stock Family',
+  'Partition DP & Palindrome Partitioning Family',
+  'Interval DP — MCM & Burst Balloons',
+  'Game Theory DP — Stone Game Family',
+  'Bitmask DP',
+  'Digit DP',
+  'DP on Trees',
+  'DP on Graphs & DAGs',
+  'Probability & Expected-Value DP',
+  'Counting & Combinatorial DP',
+  'Tiling DP — Domino & Polyomino Counting',
+  'String DP & Regex Matching',
+  'DP Optimisations — Deque, Matrix Power, Meet in the Middle',
+  'Prefix Sums & Subarray DP Techniques',
+  'Advanced DP Techniques & Memoization',
+];
+
+// Tree Mappings & Canonical Order
+const TREE_CATEGORY_MAPPING = {
+  'Binary Tree Traversals': 'Binary Tree Traversals — Recursive & Iterative',
+  '1. Traversals — Recursive, then Iterative': 'Binary Tree Traversals — Recursive & Iterative',
+  'Tree Properties and Views': 'Level-Order BFS & Tree Views',
+  '2. Level-Order BFS & Tree Views': 'Level-Order BFS & Tree Views',
+  'Tree Comparison and Subtrees': 'Tree Properties — Depth, Balance, Symmetry',
+  '3. Tree Properties — Depth, Balance, Symmetry': 'Tree Properties — Depth, Balance, Symmetry',
+  'Tree Path Problems': 'Path Problems — Path Sum Family',
+  '4. Path Problems — Path Sum Family': 'Path Problems — Path Sum Family',
+  'Tree Construction and Serialization': 'Tree Construction from Traversals',
+  '5. Tree Construction from Traversals': 'Tree Construction from Traversals',
+  'Binary Search Tree (BST) Operations': 'Binary Search Tree — Validate, Insert, Delete',
+  '6. Binary Search Tree — Validate, Insert, Delete': 'Binary Search Tree — Validate, Insert, Delete',
+  '7. BST as an Ordered Multiset — Order Statistics & Range Queries': 'BST as an Ordered Multiset — Order Statistics & Range Queries',
+  '8. Lowest Common Ancestor Family': 'Lowest Common Ancestor (LCA) Family',
+  '9. Serialize, Deserialize & Subtree Hashing': 'Serialize, Deserialize & Subtree Hashing',
+  'Tree Modifications and Transformations': 'Tree Modifications & Transformations',
+  '10. Tree DP on Binary Trees': 'Tree DP on Binary Trees',
+  '11. Rooted Tree Queries — Euler Tour, LCA & Binary Lifting': 'Rooted Tree Queries — Euler Tour, LCA & Binary Lifting',
+  '12. Centroid Decomposition & Path Counting': 'Centroid Decomposition & Path Counting',
+  '13. Trie (Prefix Tree) Family': 'Trie (Prefix Tree) Family',
+};
+
+const TREE_CANONICAL_ORDER = [
+  'Binary Tree Traversals — Recursive & Iterative',
+  'Level-Order BFS & Tree Views',
+  'Tree Properties — Depth, Balance, Symmetry',
+  'Path Problems — Path Sum Family',
+  'Tree Construction from Traversals',
+  'Binary Search Tree — Validate, Insert, Delete',
+  'BST as an Ordered Multiset — Order Statistics & Range Queries',
+  'Lowest Common Ancestor (LCA) Family',
+  'Serialize, Deserialize & Subtree Hashing',
+  'Tree Modifications & Transformations',
+  'Tree DP on Binary Trees',
+  'Rooted Tree Queries — Euler Tour, LCA & Binary Lifting',
+  'Centroid Decomposition & Path Counting',
+  'Trie (Prefix Tree) Family',
+];
+
+// Graph Mappings & Canonical Order
+const GRAPH_CATEGORY_MAPPING = {
+  '1. Grid Traversal — DFS & Flood Fill': 'Grid Traversal — DFS & Flood Fill',
+  'Graph Traversal (BFS/DFS)': 'Graph Traversal — Adjacency Lists, BFS & DFS',
+  '2. Graph Traversal — Adjacency Lists, BFS & DFS': 'Graph Traversal — Adjacency Lists, BFS & DFS',
+  '3. Multi-Source BFS & Shortest Path on Unweighted Graphs': 'Multi-Source BFS & Shortest Path on Unweighted Graphs',
+  '4. BFS on Implicit State Graphs': 'BFS on Implicit State Graphs',
+  'Graph Coloring and Bipartite Graphs': 'Cycle Detection, Bipartite Graphs & Graph Coloring',
+  '5. Cycle Detection & Bipartite Checking': 'Cycle Detection, Bipartite Graphs & Graph Coloring',
+  'Topological Sorting': 'Topological Sort — Course Schedule Family',
+  '6. Topological Sort — Course Schedule Family': 'Topological Sort — Course Schedule Family',
+  'Union Find (Disjoint Set Union - DSU)': 'Union-Find (Disjoint Set Union - DSU)',
+  '7. Union-Find (Disjoint Set Union)': 'Union-Find (Disjoint Set Union - DSU)',
+  'Minimum Spanning Tree (MST)': 'Minimum Spanning Tree — Kruskal & Prim',
+  '8. Minimum Spanning Tree — Kruskal & Prim': 'Minimum Spanning Tree — Kruskal & Prim',
+  'Shortest Path Algorithms': 'Shortest Path Algorithms (Dijkstra - Weighted)',
+  '9. Dijkstra — Weighted Shortest Path': 'Shortest Path Algorithms (Dijkstra - Weighted)',
+  '10. Bellman-Ford, Floyd-Warshall & Bounded-Hop Paths': 'Bellman-Ford, Floyd-Warshall & Bounded-Hop Paths',
+  'Graph Components and Connectivity': 'Bridges, Articulation Points & Strongly Connected Components',
+  '11. Bridges, Articulation Points & Strongly Connected Components': 'Bridges, Articulation Points & Strongly Connected Components',
+  '12. Functional Graphs & Successor Paths': 'Functional Graphs & Successor Paths',
+  '13. Eulerian Paths & Graph Reconstruction': 'Eulerian Paths & Graph Reconstruction',
+  '14. Max Flow & Bipartite Matching': 'Max Flow & Bipartite Matching',
+  '15. Graph Modelling — Problems That Do Not Look Like Graphs': 'Graph Modelling — Problems That Do Not Look Like Graphs',
+};
+
+const GRAPH_CANONICAL_ORDER = [
+  'Grid Traversal — DFS & Flood Fill',
+  'Graph Traversal — Adjacency Lists, BFS & DFS',
+  'Multi-Source BFS & Shortest Path on Unweighted Graphs',
+  'BFS on Implicit State Graphs',
+  'Cycle Detection, Bipartite Graphs & Graph Coloring',
+  'Topological Sort — Course Schedule Family',
+  'Union-Find (Disjoint Set Union - DSU)',
+  'Minimum Spanning Tree — Kruskal & Prim',
+  'Shortest Path Algorithms (Dijkstra - Weighted)',
+  'Bellman-Ford, Floyd-Warshall & Bounded-Hop Paths',
+  'Bridges, Articulation Points & Strongly Connected Components',
+  'Functional Graphs & Successor Paths',
+  'Eulerian Paths & Graph Reconstruction',
+  'Max Flow & Bipartite Matching',
+  'Graph Modelling — Problems That Do Not Look Like Graphs',
+];
 
 // Base categories with LeetCode URLs
 const baseDpCategories = DP_CATEGORIES.map(c => ({
@@ -198,19 +413,19 @@ const ALL_SHEETS_REGISTRY = {
     slug: 'dp',
     title: 'Dynamic Programming',
     shortLabel: 'DP',
-    categories: mergeUniqueSections(baseDpCategories, dpSections),
+    categories: mergeUnifiedSections(baseDpCategories, dpSections, DP_CATEGORY_MAPPING, DP_CANONICAL_ORDER),
   },
   tree: {
     slug: 'tree',
     title: 'Binary Trees & BST',
     shortLabel: 'Trees',
-    categories: mergeUniqueSections(baseTreeCategories, treeSections),
+    categories: mergeUnifiedSections(baseTreeCategories, treeSections, TREE_CATEGORY_MAPPING, TREE_CANONICAL_ORDER),
   },
   graph: {
     slug: 'graph',
     title: 'Graph Algorithms',
     shortLabel: 'Graphs',
-    categories: mergeUniqueSections(baseGraphCategories, prepforgeGraphSections),
+    categories: mergeUnifiedSections(baseGraphCategories, prepforgeGraphSections, GRAPH_CATEGORY_MAPPING, GRAPH_CANONICAL_ORDER),
   },
   'binary-search': {
     slug: 'binary-search',
