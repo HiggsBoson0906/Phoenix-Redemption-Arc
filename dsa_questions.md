@@ -93,78 +93,29 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Hard] Maximum Subarray Min Product — https://leetcode.com/problems/maximum-subarray-min-product/
 - [LeetCode] [Hard] Substring With Largest Variance — https://leetcode.com/problems/substring-with-largest-variance/
 
-### 1.3 0/1 Knapsack & Subset Sum Family (22 Problems)
-- [LeetCode] [Medium] House Robber II — https://leetcode.com/problems/house-robber-ii/
-- [LeetCode] [Medium] Ones and Zeroes — https://leetcode.com/problems/ones-and-zeroes/
-- [LeetCode] [Medium] Target Sum — https://leetcode.com/problems/target-sum/
-- [LeetCode] [Medium] Shopping Offers — https://leetcode.com/problems/shopping-offers/
-- [LeetCode] [Medium] 2 Keys Keyboard — https://leetcode.com/problems/2-keys-keyboard/
-- [LeetCode] [Medium] Minimum Swaps to Make Sequences Increasing — https://leetcode.com/problems/minimum-swaps-to-make-sequences-increasing/
-- [LeetCode] [Medium] Best Team with No Conflicts — https://leetcode.com/problems/best-team-with-no-conflicts/
-- [LeetCode] [Hard] Profitable Schemes — https://leetcode.com/problems/profitable-schemes/
-- [LeetCode] [Hard] Tallest Billboard — https://leetcode.com/problems/tallest-billboard/
-- [LeetCode] [Hard] Pizza with 3N Slices — https://leetcode.com/problems/pizza-with-3n-slices/
-- [LeetCode] [Hard] Reducing Dishes — https://leetcode.com/problems/reducing-dishes/
-- [LeetCode] [Hard] Painting the Walls — https://leetcode.com/problems/painting-the-walls/
-- [GeeksforGeeks] [Easy] Subset Sum Problem — https://www.geeksforgeeks.org/problems/subset-sum-problem-1611555638/1
-- [CodeChef] [Easy] Paying Up — https://www.codechef.com/problems/MARCHA1
-- [GeeksforGeeks] [Easy] 0 1 Knapsack Problem — https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1
-- [AtCoder] [Easy] EDPC D — Knapsack 1 — https://atcoder.jp/contests/dp/tasks/dp_d
-- [CSES] [Medium] Book Shop — https://cses.fi/problemset/task/1158
-- [CSES] [Medium] Money Sums — https://cses.fi/problemset/task/1745
-- [AtCoder] [Medium] EDPC E — Knapsack 2 — https://atcoder.jp/contests/dp/tasks/dp_e
-- [LeetCode] [Medium] Number Of Ways To Earn Points — https://leetcode.com/problems/number-of-ways-to-earn-points/
-- [LeetCode] [Hard] Partition Array Into Two Arrays To Minimize Sum Difference — https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/
-- [LeetCode] [Hard] Maximum Value Of K Coins From Piles — https://leetcode.com/problems/maximum-value-of-k-coins-from-piles/
+### 1.3 Prefix Sums & Subarray DP Techniques (20 Problems)
+- [LeetCode] [Easy] Range Sum Query Immutable — https://leetcode.com/problems/range-sum-query-immutable/
+- [LeetCode] [Medium] Maximal Square — https://leetcode.com/problems/maximal-square/
+- [LeetCode] [Medium] Range Sum Query 2D Immutable — https://leetcode.com/problems/range-sum-query-2d-immutable/
+- [LeetCode] [Medium] Largest Plus Sign — https://leetcode.com/problems/largest-plus-sign/
+- [LeetCode] [Medium] Push Dominoes — https://leetcode.com/problems/push-dominoes/
+- [LeetCode] [Medium] Largest 1 Bordered Square — https://leetcode.com/problems/largest-1-bordered-square/
+- [LeetCode] [Medium] Count Square Submatrices with All Ones — https://leetcode.com/problems/count-square-submatrices-with-all-ones/
+- [LeetCode] [Medium] Matrix Block Sum — https://leetcode.com/problems/matrix-block-sum/
+- [LeetCode] [Medium] Maximum Points You Can Obtain from Cards — https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/
+- [LeetCode] [Hard] Count Submatrices with All Ones — https://leetcode.com/problems/count-submatrices-with-all-ones/
+- [LeetCode] [Medium] Ways to Make a Fair Array — https://leetcode.com/problems/ways-to-make-a-fair-array/
+- [LeetCode] [Hard] Maximal Rectangle — https://leetcode.com/problems/maximal-rectangle/
+- [LeetCode] [Hard] Max Sum of Rectangle No Larger Than K — https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/
+- [LeetCode] [Hard] Super Washing Machines — https://leetcode.com/problems/super-washing-machines/
+- [LeetCode] [Hard] Maximum Sum of 3 Non Overlapping Subarrays — https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/
+- [LeetCode] [Hard] Number of Submatrices That Sum to Target — https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/
+- [LeetCode] [Hard] Get the Maximum Score — https://leetcode.com/problems/get-the-maximum-score/
+- [LeetCode] [Medium] Continuous Subarray Sum — https://leetcode.com/problems/continuous-subarray-sum/
+- [LeetCode] [Medium] Find Two Non Overlapping Sub Arrays Each with Target Sum — https://leetcode.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+- [LeetCode] [Medium] Maximum Number of Non Overlapping Subarrays with Sum Equals Target — https://leetcode.com/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/
 
-### 1.4 Unbounded Knapsack & Coin Change Family (9 Problems)
-> Items are reusable, so capacity loops forward. The one thing to internalise here: loop order decides whether you count combinations (outer = item) or permutations (outer = capacity).
-
-- [Codeforces] [Easy] CF 189A — Cut Ribbon (1300) — https://codeforces.com/problemset/problem/189/A
-- [CSES] [Easy] Minimizing Coins — https://cses.fi/problemset/task/1634
-- [CSES] [Easy] Coin Combinations I — https://cses.fi/problemset/task/1635
-- [CSES] [Easy] Coin Combinations II — https://cses.fi/problemset/task/1636
-- [LeetCode] [Medium] Coin Change Ii — https://leetcode.com/problems/coin-change-ii/
-- [GeeksforGeeks] [Medium] Number Of Coins — https://www.geeksforgeeks.org/problems/number-of-coins1824/1
-- [GeeksforGeeks] [Medium] Knapsack With Duplicate Items — https://www.geeksforgeeks.org/problems/knapsack-with-duplicate-items4201/1
-- [GeeksforGeeks] [Medium] Rod Cutting — https://www.geeksforgeeks.org/problems/rod-cutting0840/1
-- [Codeforces] [Hard] CF 431C — k-Tree (1600) — https://codeforces.com/problemset/problem/431/C
-
-### 1.5 Longest Increasing Subsequence (LIS) Family (13 Problems)
-- [LeetCode] [Medium] Longest Increasing Subsequence — https://leetcode.com/problems/longest-increasing-subsequence/
-- [LeetCode] [Medium] Number of Longest Increasing Subsequence — https://leetcode.com/problems/number-of-longest-increasing-subsequence/
-- [LeetCode] [Hard] Russian Doll Envelopes — https://leetcode.com/problems/russian-doll-envelopes/
-- [LeetCode] [Hard] Delete Columns to Make Sorted III — https://leetcode.com/problems/delete-columns-to-make-sorted-iii/
-- [LeetCode] [Hard] Minimum Number of Removals to Make Mountain Array — https://leetcode.com/problems/minimum-number-of-removals-to-make-mountain-array/
-- [LeetCode] [Hard] Maximum Height by Stacking Cuboids — https://leetcode.com/problems/maximum-height-by-stacking-cuboids/
-- [LeetCode] [Hard] Make Array Strictly Increasing — https://leetcode.com/problems/make-array-strictly-increasing/
-- [CSES] [Easy] Increasing Subsequence — https://cses.fi/problemset/task/1145
-- [Codeforces] [Medium] CF 977F — Consecutive Subsequence (1700) — https://codeforces.com/problemset/problem/977/F
-- [SPOJ] [Medium] MDOLLS — Nested Dolls — https://www.spoj.com/problems/MDOLLS/
-- [Codeforces] [Medium] CF 4D — Mysterious Present (1700) — https://codeforces.com/problemset/problem/4/D
-- [CSES] [Hard] Increasing Subsequence II — https://cses.fi/problemset/task/1748
-- [LeetCode] [Hard] Find The Longest Valid Obstacle Course At Each Position — https://leetcode.com/problems/find-the-longest-valid-obstacle-course-at-each-position/
-
-### 1.6 Two-Sequence DP — LCS & Edit Distance Family (17 Problems)
-- [LeetCode] [Medium] Longest Palindromic Substring — https://leetcode.com/problems/longest-palindromic-substring/
-- [LeetCode] [Medium] Longest Palindromic Subsequence — https://leetcode.com/problems/longest-palindromic-subsequence/
-- [LeetCode] [Medium] Maximum Length of Repeated Subarray — https://leetcode.com/problems/maximum-length-of-repeated-subarray/
-- [LeetCode] [Medium] Longest Common Subsequence — https://leetcode.com/problems/longest-common-subsequence/
-- [LeetCode] [Hard] Regular Expression Matching — https://leetcode.com/problems/regular-expression-matching/
-- [LeetCode] [Hard] Wildcard Matching — https://leetcode.com/problems/wildcard-matching/
-- [LeetCode] [Hard] Edit Distance — https://leetcode.com/problems/edit-distance/
-- [LeetCode] [Medium] Interleaving String — https://leetcode.com/problems/interleaving-string/
-- [LeetCode] [Hard] Shortest Common Supersequence — https://leetcode.com/problems/shortest-common-supersequence/
-- [LeetCode] [Hard] Minimum Insertion Steps to Make a String Palindrome — https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
-- [LeetCode] [Hard] Max Dot Product of Two Subsequences — https://leetcode.com/problems/max-dot-product-of-two-subsequences/
-- [CSES] [Easy] Longest Common Subsequence — https://cses.fi/problemset/task/3403
-- [AtCoder] [Easy] EDPC F — LCS — https://atcoder.jp/contests/dp/tasks/dp_f
-- [LeetCode] [Easy] Uncrossed Lines — https://leetcode.com/problems/uncrossed-lines/
-- [LeetCode] [Easy] Delete Operation For Two Strings — https://leetcode.com/problems/delete-operation-for-two-strings/
-- [CSES] [Medium] Edit Distance — https://cses.fi/problemset/task/1639
-- [CSES] [Hard] Distinct Subsequences — https://cses.fi/problemset/task/1149
-
-### 1.7 Grid & Multi-Dimensional DP (44 Problems)
+### 1.4 Grid & Multi-Dimensional DP (44 Problems)
 - [LeetCode] [Medium] Triangle — https://leetcode.com/problems/triangle/
 - [LeetCode] [Medium] Combination Sum IV — https://leetcode.com/problems/combination-sum-iv/
 - [LeetCode] [Medium] Out of Boundary Paths — https://leetcode.com/problems/out-of-boundary-paths/
@@ -210,14 +161,109 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Medium] Maximum Number Of Points With Cost — https://leetcode.com/problems/maximum-number-of-points-with-cost/
 - [AtCoder] [Hard] EDPC Y — Grid 2 — https://atcoder.jp/contests/dp/tasks/dp_y
 
-### 1.8 State-Machine DP — Buy & Sell Stock Family (3 Problems)
+### 1.5 0/1 Knapsack & Subset Sum Family (22 Problems)
+- [LeetCode] [Medium] House Robber II — https://leetcode.com/problems/house-robber-ii/
+- [LeetCode] [Medium] Ones and Zeroes — https://leetcode.com/problems/ones-and-zeroes/
+- [LeetCode] [Medium] Target Sum — https://leetcode.com/problems/target-sum/
+- [LeetCode] [Medium] Shopping Offers — https://leetcode.com/problems/shopping-offers/
+- [LeetCode] [Medium] 2 Keys Keyboard — https://leetcode.com/problems/2-keys-keyboard/
+- [LeetCode] [Medium] Minimum Swaps to Make Sequences Increasing — https://leetcode.com/problems/minimum-swaps-to-make-sequences-increasing/
+- [LeetCode] [Medium] Best Team with No Conflicts — https://leetcode.com/problems/best-team-with-no-conflicts/
+- [LeetCode] [Hard] Profitable Schemes — https://leetcode.com/problems/profitable-schemes/
+- [LeetCode] [Hard] Tallest Billboard — https://leetcode.com/problems/tallest-billboard/
+- [LeetCode] [Hard] Pizza with 3N Slices — https://leetcode.com/problems/pizza-with-3n-slices/
+- [LeetCode] [Hard] Reducing Dishes — https://leetcode.com/problems/reducing-dishes/
+- [LeetCode] [Hard] Painting the Walls — https://leetcode.com/problems/painting-the-walls/
+- [GeeksforGeeks] [Easy] Subset Sum Problem — https://www.geeksforgeeks.org/problems/subset-sum-problem-1611555638/1
+- [CodeChef] [Easy] Paying Up — https://www.codechef.com/problems/MARCHA1
+- [GeeksforGeeks] [Easy] 0 1 Knapsack Problem — https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1
+- [AtCoder] [Easy] EDPC D — Knapsack 1 — https://atcoder.jp/contests/dp/tasks/dp_d
+- [CSES] [Medium] Book Shop — https://cses.fi/problemset/task/1158
+- [CSES] [Medium] Money Sums — https://cses.fi/problemset/task/1745
+- [AtCoder] [Medium] EDPC E — Knapsack 2 — https://atcoder.jp/contests/dp/tasks/dp_e
+- [LeetCode] [Medium] Number Of Ways To Earn Points — https://leetcode.com/problems/number-of-ways-to-earn-points/
+- [LeetCode] [Hard] Partition Array Into Two Arrays To Minimize Sum Difference — https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/
+- [LeetCode] [Hard] Maximum Value Of K Coins From Piles — https://leetcode.com/problems/maximum-value-of-k-coins-from-piles/
+
+### 1.6 Unbounded Knapsack & Coin Change Family (9 Problems)
+> Items are reusable, so capacity loops forward. The one thing to internalise here: loop order decides whether you count combinations (outer = item) or permutations (outer = capacity).
+
+- [Codeforces] [Easy] CF 189A — Cut Ribbon (1300) — https://codeforces.com/problemset/problem/189/A
+- [CSES] [Easy] Minimizing Coins — https://cses.fi/problemset/task/1634
+- [CSES] [Easy] Coin Combinations I — https://cses.fi/problemset/task/1635
+- [CSES] [Easy] Coin Combinations II — https://cses.fi/problemset/task/1636
+- [LeetCode] [Medium] Coin Change Ii — https://leetcode.com/problems/coin-change-ii/
+- [GeeksforGeeks] [Medium] Number Of Coins — https://www.geeksforgeeks.org/problems/number-of-coins1824/1
+- [GeeksforGeeks] [Medium] Knapsack With Duplicate Items — https://www.geeksforgeeks.org/problems/knapsack-with-duplicate-items4201/1
+- [GeeksforGeeks] [Medium] Rod Cutting — https://www.geeksforgeeks.org/problems/rod-cutting0840/1
+- [Codeforces] [Hard] CF 431C — k-Tree (1600) — https://codeforces.com/problemset/problem/431/C
+
+### 1.7 Longest Increasing Subsequence (LIS) Family (13 Problems)
+- [LeetCode] [Medium] Longest Increasing Subsequence — https://leetcode.com/problems/longest-increasing-subsequence/
+- [LeetCode] [Medium] Number of Longest Increasing Subsequence — https://leetcode.com/problems/number-of-longest-increasing-subsequence/
+- [LeetCode] [Hard] Russian Doll Envelopes — https://leetcode.com/problems/russian-doll-envelopes/
+- [LeetCode] [Hard] Delete Columns to Make Sorted III — https://leetcode.com/problems/delete-columns-to-make-sorted-iii/
+- [LeetCode] [Hard] Minimum Number of Removals to Make Mountain Array — https://leetcode.com/problems/minimum-number-of-removals-to-make-mountain-array/
+- [LeetCode] [Hard] Maximum Height by Stacking Cuboids — https://leetcode.com/problems/maximum-height-by-stacking-cuboids/
+- [LeetCode] [Hard] Make Array Strictly Increasing — https://leetcode.com/problems/make-array-strictly-increasing/
+- [CSES] [Easy] Increasing Subsequence — https://cses.fi/problemset/task/1145
+- [Codeforces] [Medium] CF 977F — Consecutive Subsequence (1700) — https://codeforces.com/problemset/problem/977/F
+- [SPOJ] [Medium] MDOLLS — Nested Dolls — https://www.spoj.com/problems/MDOLLS/
+- [Codeforces] [Medium] CF 4D — Mysterious Present (1700) — https://codeforces.com/problemset/problem/4/D
+- [CSES] [Hard] Increasing Subsequence II — https://cses.fi/problemset/task/1748
+- [LeetCode] [Hard] Find The Longest Valid Obstacle Course At Each Position — https://leetcode.com/problems/find-the-longest-valid-obstacle-course-at-each-position/
+
+### 1.8 Two-Sequence DP — LCS & Edit Distance Family (17 Problems)
+- [LeetCode] [Medium] Longest Palindromic Substring — https://leetcode.com/problems/longest-palindromic-substring/
+- [LeetCode] [Medium] Longest Palindromic Subsequence — https://leetcode.com/problems/longest-palindromic-subsequence/
+- [LeetCode] [Medium] Maximum Length of Repeated Subarray — https://leetcode.com/problems/maximum-length-of-repeated-subarray/
+- [LeetCode] [Medium] Longest Common Subsequence — https://leetcode.com/problems/longest-common-subsequence/
+- [LeetCode] [Hard] Regular Expression Matching — https://leetcode.com/problems/regular-expression-matching/
+- [LeetCode] [Hard] Wildcard Matching — https://leetcode.com/problems/wildcard-matching/
+- [LeetCode] [Hard] Edit Distance — https://leetcode.com/problems/edit-distance/
+- [LeetCode] [Medium] Interleaving String — https://leetcode.com/problems/interleaving-string/
+- [LeetCode] [Hard] Shortest Common Supersequence — https://leetcode.com/problems/shortest-common-supersequence/
+- [LeetCode] [Hard] Minimum Insertion Steps to Make a String Palindrome — https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
+- [LeetCode] [Hard] Max Dot Product of Two Subsequences — https://leetcode.com/problems/max-dot-product-of-two-subsequences/
+- [CSES] [Easy] Longest Common Subsequence — https://cses.fi/problemset/task/3403
+- [AtCoder] [Easy] EDPC F — LCS — https://atcoder.jp/contests/dp/tasks/dp_f
+- [LeetCode] [Easy] Uncrossed Lines — https://leetcode.com/problems/uncrossed-lines/
+- [LeetCode] [Easy] Delete Operation For Two Strings — https://leetcode.com/problems/delete-operation-for-two-strings/
+- [CSES] [Medium] Edit Distance — https://cses.fi/problemset/task/1639
+- [CSES] [Hard] Distinct Subsequences — https://cses.fi/problemset/task/1149
+
+### 1.9 String DP & Regex Matching (22 Problems)
+- [LeetCode] [Easy] Is Subsequence — https://leetcode.com/problems/is-subsequence/
+- [LeetCode] [Medium] Palindrome Partitioning — https://leetcode.com/problems/palindrome-partitioning/
+- [LeetCode] [Hard] Palindrome Partitioning II — https://leetcode.com/problems/palindrome-partitioning-ii/
+- [LeetCode] [Medium] Word Break — https://leetcode.com/problems/word-break/
+- [LeetCode] [Medium] Unique Substrings in Wraparound String — https://leetcode.com/problems/unique-substrings-in-wraparound-string/
+- [LeetCode] [Medium] Minimum Ascii Delete Sum for Two Strings — https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/
+- [LeetCode] [Medium] Longest String Chain — https://leetcode.com/problems/longest-string-chain/
+- [LeetCode] [Medium] Longest Happy String — https://leetcode.com/problems/longest-happy-string/
+- [LeetCode] [Hard] Longest Valid Parentheses — https://leetcode.com/problems/longest-valid-parentheses/
+- [LeetCode] [Hard] Distinct Subsequences — https://leetcode.com/problems/distinct-subsequences/
+- [LeetCode] [Hard] Word Break II — https://leetcode.com/problems/word-break-ii/
+- [LeetCode] [Hard] Count the Repetitions — https://leetcode.com/problems/count-the-repetitions/
+- [LeetCode] [Hard] Concatenated Words — https://leetcode.com/problems/concatenated-words/
+- [LeetCode] [Hard] Count Different Palindromic Subsequences — https://leetcode.com/problems/count-different-palindromic-subsequences/
+- [LeetCode] [Hard] Distinct Subsequences II — https://leetcode.com/problems/distinct-subsequences-ii/
+- [LeetCode] [Hard] Longest Chunked Palindrome Decomposition — https://leetcode.com/problems/longest-chunked-palindrome-decomposition/
+- [LeetCode] [Hard] Palindrome Partitioning III — https://leetcode.com/problems/palindrome-partitioning-iii/
+- [LeetCode] [Hard] Find All Good Strings — https://leetcode.com/problems/find-all-good-strings/
+- [LeetCode] [Hard] String Compression II — https://leetcode.com/problems/string-compression-ii/
+- [LeetCode] [Hard] Number of Ways to Form a Target String Given a Dictionary — https://leetcode.com/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
+- [CSES] [Easy] Word Combinations — https://cses.fi/problemset/task/1731
+- [CSES] [Hard] Required Substring — https://cses.fi/problemset/task/1112
+
+### 1.10 State-Machine DP — Buy & Sell Stock Family (3 Problems)
 > Solve the whole family as one state machine: hold / not-hold, plus a transaction counter or a cooldown flag. Do them in order — I to IV generalises cleanly, and cooldown/fee are the same machine with an extra edge.
 
 - [LeetCode] [Medium] Best Time To Buy And Sell Stock Ii — https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 - [LeetCode] [Hard] Maximum Earnings From Taxi — https://leetcode.com/problems/maximum-earnings-from-taxi/
 - [LeetCode] [Hard] Maximum Number Of Events That Can Be Attended Ii — https://leetcode.com/problems/maximum-number-of-events-that-can-be-attended-ii/
 
-### 1.9 Partition DP & Palindrome Partitioning Family (4 Problems)
+### 1.11 Partition DP & Palindrome Partitioning Family (4 Problems)
 > Cut the array or string into k pieces: dp[i][k] = best over every last-cut position j. Precomputing the cost of a piece is what turns these from TLE into a tight inner loop.
 
 - [GeeksforGeeks] [Easy] Palindromic Patitioning — https://www.geeksforgeeks.org/problems/palindromic-patitioning4845/1
@@ -225,7 +271,7 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Medium] Minimum Cost To Split An Array — https://leetcode.com/problems/minimum-cost-to-split-an-array/
 - [LeetCode] [Hard] Minimum White Tiles After Covering With Carpets — https://leetcode.com/problems/minimum-white-tiles-after-covering-with-carpets/
 
-### 1.10 Interval DP — MCM & Burst Balloons (22 Problems)
+### 1.12 Interval DP — MCM & Burst Balloons (22 Problems)
 - [LeetCode] [Medium] Guess Number Higher or Lower II — https://leetcode.com/problems/guess-number-higher-or-lower-ii/
 - [LeetCode] [Medium] Arithmetic Slices — https://leetcode.com/problems/arithmetic-slices/
 - [LeetCode] [Medium] Predict the Winner — https://leetcode.com/problems/predict-the-winner/
@@ -249,7 +295,7 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [AtCoder] [Medium] EDPC N — Slimes — https://atcoder.jp/contests/dp/tasks/dp_n
 - [GeeksforGeeks] [Hard] Egg Dropping Puzzle — https://www.geeksforgeeks.org/problems/egg-dropping-puzzle-1587115620/1
 
-### 1.11 Game Theory DP — Stone Game Family (14 Problems)
+### 1.13 Game Theory DP — Stone Game Family (14 Problems)
 > Minimax over game states: your score minus the opponent's, evaluated from the end backwards. Stone Game VI and IX are deliberately NOT here — they collapse to sorting and counting, so they live in the greedy sheet.
 
 - [LeetCode] [Easy] Nim Game — https://leetcode.com/problems/nim-game/
@@ -266,44 +312,6 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Hard] Cat And Mouse Ii — https://leetcode.com/problems/cat-and-mouse-ii/
 - [GeeksforGeeks] [Hard] Optimal Strategy For A Game — https://www.geeksforgeeks.org/problems/optimal-strategy-for-a-game-1587115620/1
 - [GeeksforGeeks] [Hard] Game Of Stones — https://www.geeksforgeeks.org/problems/game-of-stones/1
-
-### 1.12 Bitmask DP (24 Problems)
-- [LeetCode] [Medium] Can I Win — https://leetcode.com/problems/can-i-win/
-- [LeetCode] [Medium] Partition to K Equal Sum Subsets — https://leetcode.com/problems/partition-to-k-equal-sum-subsets/
-- [LeetCode] [Hard] Stickers to Spell Word — https://leetcode.com/problems/stickers-to-spell-word/
-- [LeetCode] [Hard] Shortest Path Visiting All Nodes — https://leetcode.com/problems/shortest-path-visiting-all-nodes/
-- [LeetCode] [Hard] Smallest Sufficient Team — https://leetcode.com/problems/smallest-sufficient-team/
-- [LeetCode] [Hard] Maximum Students Taking Exam — https://leetcode.com/problems/maximum-students-taking-exam/
-- [LeetCode] [Hard] Number of Ways to Wear Different Hats to Each Other — https://leetcode.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
-- [LeetCode] [Hard] Minimum Cost to Connect Two Groups of Points — https://leetcode.com/problems/minimum-cost-to-connect-two-groups-of-points/
-- [LeetCode] [Hard] Maximum Number of Achievable Transfer Requests — https://leetcode.com/problems/maximum-number-of-achievable-transfer-requests/
-- [LeetCode] [Hard] Distribute Repeating Integers — https://leetcode.com/problems/distribute-repeating-integers/
-- [LeetCode] [Hard] Maximize Grid Happiness — https://leetcode.com/problems/maximize-grid-happiness/
-- [LeetCode] [Hard] Find Minimum Time to Finish All Jobs — https://leetcode.com/problems/find-minimum-time-to-finish-all-jobs/
-- [CSES] [Easy] Apple Division — https://cses.fi/problemset/task/1623
-- [AtCoder] [Easy] EDPC O — Matching — https://atcoder.jp/contests/dp/tasks/dp_o
-- [LeetCode] [Easy] Matchsticks To Square — https://leetcode.com/problems/matchsticks-to-square/
-- [LeetCode] [Easy] Fair Distribution Of Cookies — https://leetcode.com/problems/fair-distribution-of-cookies/
-- [LeetCode] [Easy] Minimum Number Of Work Sessions To Finish The Tasks — https://leetcode.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/
-- [CSES] [Easy] Elevator Rides — https://cses.fi/problemset/task/1653
-- [CSES] [Medium] Hamiltonian Flights — https://cses.fi/problemset/task/1690
-- [LeetCode] [Medium] Minimum Xor Sum Of Two Arrays — https://leetcode.com/problems/minimum-xor-sum-of-two-arrays/
-- [AtCoder] [Medium] EDPC U — Grouping — https://atcoder.jp/contests/dp/tasks/dp_u
-- [LeetCode] [Hard] Parallel Courses Ii — https://leetcode.com/problems/parallel-courses-ii/
-- [LeetCode] [Hard] Maximum And Sum Of Array — https://leetcode.com/problems/maximum-and-sum-of-array/
-- [CSES] [Hard] Counting Tilings — https://cses.fi/problemset/task/2181
-
-### 1.13 Digit DP (10 Problems)
-- [LeetCode] [Hard] Non Negative Integers Without Consecutive Ones — https://leetcode.com/problems/non-negative-integers-without-consecutive-ones/
-- [LeetCode] [Hard] Numbers at Most N Given Digit Set — https://leetcode.com/problems/numbers-at-most-n-given-digit-set/
-- [LeetCode] [Hard] Numbers with Repeated Digits — https://leetcode.com/problems/numbers-with-repeated-digits/
-- [LeetCode] [Easy] Rotated Digits — https://leetcode.com/problems/rotated-digits/
-- [AtCoder] [Medium] EDPC S — Digit Sum — https://atcoder.jp/contests/dp/tasks/dp_s
-- [LeetCode] [Medium] Number Of Digit One — https://leetcode.com/problems/number-of-digit-one/
-- [CSES] [Medium] Counting Numbers — https://cses.fi/problemset/task/2220
-- [LeetCode] [Medium] Count Special Integers — https://leetcode.com/problems/count-special-integers/
-- [LeetCode] [Hard] Count Of Integers — https://leetcode.com/problems/count-of-integers/
-- [LeetCode] [Hard] Count The Number Of Powerful Integers — https://leetcode.com/problems/count-the-number-of-powerful-integers/
 
 ### 1.14 DP on Trees (23 Problems)
 - [LeetCode] [Medium] Unique Binary Search Trees II — https://leetcode.com/problems/unique-binary-search-trees-ii/
@@ -344,17 +352,45 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [CSES] [Hard] Investigation — https://cses.fi/problemset/task/1202
 - [LeetCode] [Hard] Minimum Cost To Reach Destination In Time — https://leetcode.com/problems/minimum-cost-to-reach-destination-in-time/
 
-### 1.16 Probability & Expected-Value DP (8 Problems)
-- [LeetCode] [Medium] Soup Servings — https://leetcode.com/problems/soup-servings/
-- [LeetCode] [Medium] New 21 Game — https://leetcode.com/problems/new-21-game/
-- [LeetCode] [Medium] Airplane Seat Assignment Probability — https://leetcode.com/problems/airplane-seat-assignment-probability/
-- [CSES] [Easy] Dice Probability — https://cses.fi/problemset/task/1725
-- [CSES] [Easy] Candy Lottery — https://cses.fi/problemset/task/1727
-- [CSES] [Medium] Inversion Probability — https://cses.fi/problemset/task/1728
-- [CSES] [Medium] Moving Robots — https://cses.fi/problemset/task/1726
-- [LeetCode] [Hard] Probability Of A Two Boxes Having The Same Number Of Distinct Balls — https://leetcode.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
+### 1.16 Bitmask DP (24 Problems)
+- [LeetCode] [Medium] Can I Win — https://leetcode.com/problems/can-i-win/
+- [LeetCode] [Medium] Partition to K Equal Sum Subsets — https://leetcode.com/problems/partition-to-k-equal-sum-subsets/
+- [LeetCode] [Hard] Stickers to Spell Word — https://leetcode.com/problems/stickers-to-spell-word/
+- [LeetCode] [Hard] Shortest Path Visiting All Nodes — https://leetcode.com/problems/shortest-path-visiting-all-nodes/
+- [LeetCode] [Hard] Smallest Sufficient Team — https://leetcode.com/problems/smallest-sufficient-team/
+- [LeetCode] [Hard] Maximum Students Taking Exam — https://leetcode.com/problems/maximum-students-taking-exam/
+- [LeetCode] [Hard] Number of Ways to Wear Different Hats to Each Other — https://leetcode.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
+- [LeetCode] [Hard] Minimum Cost to Connect Two Groups of Points — https://leetcode.com/problems/minimum-cost-to-connect-two-groups-of-points/
+- [LeetCode] [Hard] Maximum Number of Achievable Transfer Requests — https://leetcode.com/problems/maximum-number-of-achievable-transfer-requests/
+- [LeetCode] [Hard] Distribute Repeating Integers — https://leetcode.com/problems/distribute-repeating-integers/
+- [LeetCode] [Hard] Maximize Grid Happiness — https://leetcode.com/problems/maximize-grid-happiness/
+- [LeetCode] [Hard] Find Minimum Time to Finish All Jobs — https://leetcode.com/problems/find-minimum-time-to-finish-all-jobs/
+- [CSES] [Easy] Apple Division — https://cses.fi/problemset/task/1623
+- [AtCoder] [Easy] EDPC O — Matching — https://atcoder.jp/contests/dp/tasks/dp_o
+- [LeetCode] [Easy] Matchsticks To Square — https://leetcode.com/problems/matchsticks-to-square/
+- [LeetCode] [Easy] Fair Distribution Of Cookies — https://leetcode.com/problems/fair-distribution-of-cookies/
+- [LeetCode] [Easy] Minimum Number Of Work Sessions To Finish The Tasks — https://leetcode.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/
+- [CSES] [Easy] Elevator Rides — https://cses.fi/problemset/task/1653
+- [CSES] [Medium] Hamiltonian Flights — https://cses.fi/problemset/task/1690
+- [LeetCode] [Medium] Minimum Xor Sum Of Two Arrays — https://leetcode.com/problems/minimum-xor-sum-of-two-arrays/
+- [AtCoder] [Medium] EDPC U — Grouping — https://atcoder.jp/contests/dp/tasks/dp_u
+- [LeetCode] [Hard] Parallel Courses Ii — https://leetcode.com/problems/parallel-courses-ii/
+- [LeetCode] [Hard] Maximum And Sum Of Array — https://leetcode.com/problems/maximum-and-sum-of-array/
+- [CSES] [Hard] Counting Tilings — https://cses.fi/problemset/task/2181
 
-### 1.17 Counting & Combinatorial DP (9 Problems)
+### 1.17 Digit DP (10 Problems)
+- [LeetCode] [Hard] Non Negative Integers Without Consecutive Ones — https://leetcode.com/problems/non-negative-integers-without-consecutive-ones/
+- [LeetCode] [Hard] Numbers at Most N Given Digit Set — https://leetcode.com/problems/numbers-at-most-n-given-digit-set/
+- [LeetCode] [Hard] Numbers with Repeated Digits — https://leetcode.com/problems/numbers-with-repeated-digits/
+- [LeetCode] [Easy] Rotated Digits — https://leetcode.com/problems/rotated-digits/
+- [AtCoder] [Medium] EDPC S — Digit Sum — https://atcoder.jp/contests/dp/tasks/dp_s
+- [LeetCode] [Medium] Number Of Digit One — https://leetcode.com/problems/number-of-digit-one/
+- [CSES] [Medium] Counting Numbers — https://cses.fi/problemset/task/2220
+- [LeetCode] [Medium] Count Special Integers — https://leetcode.com/problems/count-special-integers/
+- [LeetCode] [Hard] Count Of Integers — https://leetcode.com/problems/count-of-integers/
+- [LeetCode] [Hard] Count The Number Of Powerful Integers — https://leetcode.com/problems/count-the-number-of-powerful-integers/
+
+### 1.18 Counting & Combinatorial DP (9 Problems)
 > Count configurations rather than optimise one. Expect modular arithmetic, and expect the answer to be 'choose where the boundaries go' more often than a fresh recurrence.
 
 - [CSES] [Easy] Counting Towers — https://cses.fi/problemset/task/2413
@@ -367,7 +403,7 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Hard] Number Of Ways To Rearrange Sticks With K Sticks Visible — https://leetcode.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
 - [LeetCode] [Hard] Number Of Ways To Divide A Long Corridor — https://leetcode.com/problems/number-of-ways-to-divide-a-long-corridor/
 
-### 1.18 Tiling DP — Domino & Polyomino Counting (5 Problems)
+### 1.19 Tiling DP — Domino & Polyomino Counting (5 Problems)
 > Count tilings of a strip or grid rather than optimise one. The 2×N case is Fibonacci in disguise; widen the strip or swap in squares and the state becomes a bitmask of the frontier column — the same broadening-state idea Bitmask DP already taught.
 
 - [GeeksforGeeks] [Easy] Ways To Tile A Floor — https://www.geeksforgeeks.org/problems/ways-to-tile-a-floor5836/1
@@ -376,31 +412,17 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [Codeforces] [Medium] Codeforces — C — https://codeforces.com/problemset/problem/1178/C
 - [AtCoder] [Medium] AtCoder — Abc345 D — https://atcoder.jp/contests/abc345/tasks/abc345_d
 
-### 1.19 String DP & Regex Matching (22 Problems)
-- [LeetCode] [Easy] Is Subsequence — https://leetcode.com/problems/is-subsequence/
-- [LeetCode] [Medium] Palindrome Partitioning — https://leetcode.com/problems/palindrome-partitioning/
-- [LeetCode] [Hard] Palindrome Partitioning II — https://leetcode.com/problems/palindrome-partitioning-ii/
-- [LeetCode] [Medium] Word Break — https://leetcode.com/problems/word-break/
-- [LeetCode] [Medium] Unique Substrings in Wraparound String — https://leetcode.com/problems/unique-substrings-in-wraparound-string/
-- [LeetCode] [Medium] Minimum Ascii Delete Sum for Two Strings — https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/
-- [LeetCode] [Medium] Longest String Chain — https://leetcode.com/problems/longest-string-chain/
-- [LeetCode] [Medium] Longest Happy String — https://leetcode.com/problems/longest-happy-string/
-- [LeetCode] [Hard] Longest Valid Parentheses — https://leetcode.com/problems/longest-valid-parentheses/
-- [LeetCode] [Hard] Distinct Subsequences — https://leetcode.com/problems/distinct-subsequences/
-- [LeetCode] [Hard] Word Break II — https://leetcode.com/problems/word-break-ii/
-- [LeetCode] [Hard] Count the Repetitions — https://leetcode.com/problems/count-the-repetitions/
-- [LeetCode] [Hard] Concatenated Words — https://leetcode.com/problems/concatenated-words/
-- [LeetCode] [Hard] Count Different Palindromic Subsequences — https://leetcode.com/problems/count-different-palindromic-subsequences/
-- [LeetCode] [Hard] Distinct Subsequences II — https://leetcode.com/problems/distinct-subsequences-ii/
-- [LeetCode] [Hard] Longest Chunked Palindrome Decomposition — https://leetcode.com/problems/longest-chunked-palindrome-decomposition/
-- [LeetCode] [Hard] Palindrome Partitioning III — https://leetcode.com/problems/palindrome-partitioning-iii/
-- [LeetCode] [Hard] Find All Good Strings — https://leetcode.com/problems/find-all-good-strings/
-- [LeetCode] [Hard] String Compression II — https://leetcode.com/problems/string-compression-ii/
-- [LeetCode] [Hard] Number of Ways to Form a Target String Given a Dictionary — https://leetcode.com/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
-- [CSES] [Easy] Word Combinations — https://cses.fi/problemset/task/1731
-- [CSES] [Hard] Required Substring — https://cses.fi/problemset/task/1112
+### 1.20 Probability & Expected-Value DP (8 Problems)
+- [LeetCode] [Medium] Soup Servings — https://leetcode.com/problems/soup-servings/
+- [LeetCode] [Medium] New 21 Game — https://leetcode.com/problems/new-21-game/
+- [LeetCode] [Medium] Airplane Seat Assignment Probability — https://leetcode.com/problems/airplane-seat-assignment-probability/
+- [CSES] [Easy] Dice Probability — https://cses.fi/problemset/task/1725
+- [CSES] [Easy] Candy Lottery — https://cses.fi/problemset/task/1727
+- [CSES] [Medium] Inversion Probability — https://cses.fi/problemset/task/1728
+- [CSES] [Medium] Moving Robots — https://cses.fi/problemset/task/1726
+- [LeetCode] [Hard] Probability Of A Two Boxes Having The Same Number Of Distinct Balls — https://leetcode.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
 
-### 1.20 DP Optimisations — Deque, Matrix Power, Meet in the Middle (17 Problems)
+### 1.21 DP Optimisations — Deque, Matrix Power, Meet in the Middle (17 Problems)
 > Last stop: the recurrence is already right but too slow. Monotonic deque kills an O(n) inner max, matrix exponentiation handles n up to 1e18, and meet-in-the-middle halves an exponential search.
 
 - [LeetCode] [Easy] Jump Game Vi — https://leetcode.com/problems/jump-game-vi/
@@ -420,28 +442,6 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [Codeforces] [Hard] Codeforces — B — https://codeforces.com/problemset/problem/786/B
 - [AtCoder] [Hard] AtCoder — Abc149 D — https://atcoder.jp/contests/abc149/tasks/abc149_d
 - [AtCoder] [Hard] AtCoder — Abc281 E — https://atcoder.jp/contests/abc281/tasks/abc281_e
-
-### 1.21 Prefix Sums & Subarray DP Techniques (20 Problems)
-- [LeetCode] [Easy] Range Sum Query Immutable — https://leetcode.com/problems/range-sum-query-immutable/
-- [LeetCode] [Medium] Maximal Square — https://leetcode.com/problems/maximal-square/
-- [LeetCode] [Medium] Range Sum Query 2D Immutable — https://leetcode.com/problems/range-sum-query-2d-immutable/
-- [LeetCode] [Medium] Largest Plus Sign — https://leetcode.com/problems/largest-plus-sign/
-- [LeetCode] [Medium] Push Dominoes — https://leetcode.com/problems/push-dominoes/
-- [LeetCode] [Medium] Largest 1 Bordered Square — https://leetcode.com/problems/largest-1-bordered-square/
-- [LeetCode] [Medium] Count Square Submatrices with All Ones — https://leetcode.com/problems/count-square-submatrices-with-all-ones/
-- [LeetCode] [Medium] Matrix Block Sum — https://leetcode.com/problems/matrix-block-sum/
-- [LeetCode] [Medium] Maximum Points You Can Obtain from Cards — https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/
-- [LeetCode] [Hard] Count Submatrices with All Ones — https://leetcode.com/problems/count-submatrices-with-all-ones/
-- [LeetCode] [Medium] Ways to Make a Fair Array — https://leetcode.com/problems/ways-to-make-a-fair-array/
-- [LeetCode] [Hard] Maximal Rectangle — https://leetcode.com/problems/maximal-rectangle/
-- [LeetCode] [Hard] Max Sum of Rectangle No Larger Than K — https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/
-- [LeetCode] [Hard] Super Washing Machines — https://leetcode.com/problems/super-washing-machines/
-- [LeetCode] [Hard] Maximum Sum of 3 Non Overlapping Subarrays — https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/
-- [LeetCode] [Hard] Number of Submatrices That Sum to Target — https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/
-- [LeetCode] [Hard] Get the Maximum Score — https://leetcode.com/problems/get-the-maximum-score/
-- [LeetCode] [Medium] Continuous Subarray Sum — https://leetcode.com/problems/continuous-subarray-sum/
-- [LeetCode] [Medium] Find Two Non Overlapping Sub Arrays Each with Target Sum — https://leetcode.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
-- [LeetCode] [Medium] Maximum Number of Non Overlapping Subarrays with Sum Equals Target — https://leetcode.com/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/
 
 ### 1.22 Advanced DP Techniques & Memoization (20 Problems)
 - [LeetCode] [Hard] Arithmetic Slices II Subsequence — https://leetcode.com/problems/arithmetic-slices-ii-subsequence/
@@ -481,7 +481,25 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Medium] Find A Corresponding Node Of A Binary Tree In A Clone Of That Tree — https://leetcode.com/problems/find-a-corresponding-node-of-a-binary-tree-in-a-clone-of-that-tree/
 - [LeetCode] [Hard] Binary Search Tree Iterator — https://leetcode.com/problems/binary-search-tree-iterator/
 
-### 2.2 Level-Order BFS & Tree Views (21 Problems)
+### 2.2 Tree Properties — Depth, Balance, Symmetry (16 Problems)
+- [LeetCode] [Easy] Same Tree — https://leetcode.com/problems/same-tree/
+- [LeetCode] [Easy] Subtree of Another Tree — https://leetcode.com/problems/subtree-of-another-tree/
+- [LeetCode] [Easy] Symmetric Tree — https://leetcode.com/problems/symmetric-tree/
+- [LeetCode] [Easy] Balanced Binary Tree — https://leetcode.com/problems/balanced-binary-tree/
+- [LeetCode] [Easy] Merge Two Binary Trees — https://leetcode.com/problems/merge-two-binary-trees/
+- [LeetCode] [Easy] Sum Of Left Leaves — https://leetcode.com/problems/sum-of-left-leaves/
+- [LeetCode] [Easy] Leaf Similar Trees — https://leetcode.com/problems/leaf-similar-trees/
+- [LeetCode] [Hard] Univalued Binary Tree — https://leetcode.com/problems/univalued-binary-tree/
+- [LeetCode] [Medium] Binary Tree Tilt — https://leetcode.com/problems/binary-tree-tilt/
+- [LeetCode] [Medium] Second Minimum Node In A Binary Tree — https://leetcode.com/problems/second-minimum-node-in-a-binary-tree/
+- [LeetCode] [Medium] Count Good Nodes In Binary Tree — https://leetcode.com/problems/count-good-nodes-in-binary-tree/
+- [LeetCode] [Medium] Maximum Difference Between Node And Ancestor — https://leetcode.com/problems/maximum-difference-between-node-and-ancestor/
+- [LeetCode] [Hard] Count Complete Tree Nodes — https://leetcode.com/problems/count-complete-tree-nodes/
+- [CSES] [Hard] Tree Isomorphism I — https://cses.fi/problemset/task/1700
+- [LeetCode] [Hard] Sum Of Nodes With Even Valued Grandparent — https://leetcode.com/problems/sum-of-nodes-with-even-valued-grandparent/
+- [LeetCode] [Hard] Binary Tree Pruning — https://leetcode.com/problems/binary-tree-pruning/
+
+### 2.3 Level-Order BFS & Tree Views (21 Problems)
 - [LeetCode] [Easy] Diameter of Binary Tree — https://leetcode.com/problems/diameter-of-binary-tree/
 - [LeetCode] [Easy] Maximum Depth of Binary Tree — https://leetcode.com/problems/maximum-depth-of-binary-tree/
 - [LeetCode] [Easy] Minimum Depth of Binary Tree — https://leetcode.com/problems/minimum-depth-of-binary-tree/
@@ -504,24 +522,6 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Hard] Check Completeness Of A Binary Tree — https://leetcode.com/problems/check-completeness-of-a-binary-tree/
 - [LeetCode] [Hard] Vertical Order Traversal Of A Binary Tree — https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/
 
-### 2.3 Tree Properties — Depth, Balance, Symmetry (16 Problems)
-- [LeetCode] [Easy] Same Tree — https://leetcode.com/problems/same-tree/
-- [LeetCode] [Easy] Subtree of Another Tree — https://leetcode.com/problems/subtree-of-another-tree/
-- [LeetCode] [Easy] Symmetric Tree — https://leetcode.com/problems/symmetric-tree/
-- [LeetCode] [Easy] Balanced Binary Tree — https://leetcode.com/problems/balanced-binary-tree/
-- [LeetCode] [Easy] Merge Two Binary Trees — https://leetcode.com/problems/merge-two-binary-trees/
-- [LeetCode] [Easy] Sum Of Left Leaves — https://leetcode.com/problems/sum-of-left-leaves/
-- [LeetCode] [Easy] Leaf Similar Trees — https://leetcode.com/problems/leaf-similar-trees/
-- [LeetCode] [Hard] Univalued Binary Tree — https://leetcode.com/problems/univalued-binary-tree/
-- [LeetCode] [Medium] Binary Tree Tilt — https://leetcode.com/problems/binary-tree-tilt/
-- [LeetCode] [Medium] Second Minimum Node In A Binary Tree — https://leetcode.com/problems/second-minimum-node-in-a-binary-tree/
-- [LeetCode] [Medium] Count Good Nodes In Binary Tree — https://leetcode.com/problems/count-good-nodes-in-binary-tree/
-- [LeetCode] [Medium] Maximum Difference Between Node And Ancestor — https://leetcode.com/problems/maximum-difference-between-node-and-ancestor/
-- [LeetCode] [Hard] Count Complete Tree Nodes — https://leetcode.com/problems/count-complete-tree-nodes/
-- [CSES] [Hard] Tree Isomorphism I — https://cses.fi/problemset/task/1700
-- [LeetCode] [Hard] Sum Of Nodes With Even Valued Grandparent — https://leetcode.com/problems/sum-of-nodes-with-even-valued-grandparent/
-- [LeetCode] [Hard] Binary Tree Pruning — https://leetcode.com/problems/binary-tree-pruning/
-
 ### 2.4 Path Problems — Path Sum Family (12 Problems)
 - [LeetCode] [Easy] Path Sum — https://leetcode.com/problems/path-sum/
 - [LeetCode] [Medium] Path Sum II — https://leetcode.com/problems/path-sum-ii/
@@ -536,7 +536,17 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Medium] Insufficient Nodes In Root To Leaf Paths — https://leetcode.com/problems/insufficient-nodes-in-root-to-leaf-paths/
 - [LeetCode] [Hard] Longest Path With Different Adjacent Characters — https://leetcode.com/problems/longest-path-with-different-adjacent-characters/
 
-### 2.5 Tree Construction from Traversals (11 Problems)
+### 2.5 Lowest Common Ancestor (LCA) Family (6 Problems)
+> On a BST the LCA is the first node that sits between the two values. On a general binary tree it is the first node that sees both sides return non-null. Do them in that order — the BST version explains the general one.
+
+- [LeetCode] [Easy] Lowest Common Ancestor Of A Binary Tree — https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+- [LeetCode] [Easy] Lowest Common Ancestor Of Deepest Leaves — https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/
+- [LeetCode] [Medium] Smallest Subtree With All The Deepest Nodes — https://leetcode.com/problems/smallest-subtree-with-all-the-deepest-nodes/
+- [LeetCode] [Medium] Step By Step Directions From A Binary Tree Node To Another — https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to-another/
+- [LeetCode] [Medium] All Nodes Distance K In Binary Tree — https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/
+- [LeetCode] [Hard] Amount Of Time For Binary Tree To Be Infected — https://leetcode.com/problems/amount-of-time-for-binary-tree-to-be-infected/
+
+### 2.6 Tree Construction from Traversals (11 Problems)
 - [LeetCode] [Medium] Construct Binary Tree from Preorder and Inorder Traversal — https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
 - [LeetCode] [Medium] Construct Binary Tree from Inorder and Postorder Traversal — https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
 - [LeetCode] [Hard] Serialize and Deserialize Binary Tree — https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
@@ -549,7 +559,15 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Hard] Create Binary Tree From Descriptions — https://leetcode.com/problems/create-binary-tree-from-descriptions/
 - [LeetCode] [Hard] Maximum Binary Tree Ii — https://leetcode.com/problems/maximum-binary-tree-ii/
 
-### 2.6 Binary Search Tree — Validate, Insert, Delete (14 Problems)
+### 2.7 Serialize, Deserialize & Subtree Hashing (4 Problems)
+> Encode a tree as a string and get it back. The same canonical-encoding idea powers duplicate-subtree detection, which is the harder follow-up interviewers jump to.
+
+- [LeetCode] [Easy] Construct String From Binary Tree — https://leetcode.com/problems/construct-string-from-binary-tree/
+- [LeetCode] [Easy] Verify Preorder Serialization Of A Binary Tree — https://leetcode.com/problems/verify-preorder-serialization-of-a-binary-tree/
+- [LeetCode] [Medium] Find Duplicate Subtrees — https://leetcode.com/problems/find-duplicate-subtrees/
+- [LeetCode] [Hard] Number Of Ways To Reorder Array To Get Same Bst — https://leetcode.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/
+
+### 2.8 Binary Search Tree — Validate, Insert, Delete (14 Problems)
 - [LeetCode] [Medium] Validate Binary Search Tree — https://leetcode.com/problems/validate-binary-search-tree/
 - [LeetCode] [Medium] Insert Into a Binary Search Tree — https://leetcode.com/problems/insert-into-a-binary-search-tree/
 - [LeetCode] [Medium] Delete Node in a Bst — https://leetcode.com/problems/delete-node-in-a-bst/
@@ -565,7 +583,7 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Medium] Convert Bst To Greater Tree — https://leetcode.com/problems/convert-bst-to-greater-tree/
 - [LeetCode] [Hard] Balance A Binary Search Tree — https://leetcode.com/problems/balance-a-binary-search-tree/
 
-### 2.7 BST as an Ordered Multiset — Order Statistics & Range Queries (9 Problems)
+### 2.9 BST as an Ordered Multiset — Order Statistics & Range Queries (9 Problems)
 > Using a balanced BST or ordered set as a live index: k-th smallest, predecessor, count-in-range. This section overlaps most with quant screens, where running median and online inversion counting are stock questions.
 
 - [LeetCode] [Easy] My Calendar I — https://leetcode.com/problems/my-calendar-i/
@@ -577,24 +595,6 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [SPOJ] [Medium] INVCNT — Inversion Count — https://www.spoj.com/problems/INVCNT/
 - [LeetCode] [Hard] Count Of Range Sum — https://leetcode.com/problems/count-of-range-sum/
 - [LeetCode] [Hard] Reverse Pairs — https://leetcode.com/problems/reverse-pairs/
-
-### 2.8 Lowest Common Ancestor (LCA) Family (6 Problems)
-> On a BST the LCA is the first node that sits between the two values. On a general binary tree it is the first node that sees both sides return non-null. Do them in that order — the BST version explains the general one.
-
-- [LeetCode] [Easy] Lowest Common Ancestor Of A Binary Tree — https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
-- [LeetCode] [Easy] Lowest Common Ancestor Of Deepest Leaves — https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/
-- [LeetCode] [Medium] Smallest Subtree With All The Deepest Nodes — https://leetcode.com/problems/smallest-subtree-with-all-the-deepest-nodes/
-- [LeetCode] [Medium] Step By Step Directions From A Binary Tree Node To Another — https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to-another/
-- [LeetCode] [Medium] All Nodes Distance K In Binary Tree — https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/
-- [LeetCode] [Hard] Amount Of Time For Binary Tree To Be Infected — https://leetcode.com/problems/amount-of-time-for-binary-tree-to-be-infected/
-
-### 2.9 Serialize, Deserialize & Subtree Hashing (4 Problems)
-> Encode a tree as a string and get it back. The same canonical-encoding idea powers duplicate-subtree detection, which is the harder follow-up interviewers jump to.
-
-- [LeetCode] [Easy] Construct String From Binary Tree — https://leetcode.com/problems/construct-string-from-binary-tree/
-- [LeetCode] [Easy] Verify Preorder Serialization Of A Binary Tree — https://leetcode.com/problems/verify-preorder-serialization-of-a-binary-tree/
-- [LeetCode] [Medium] Find Duplicate Subtrees — https://leetcode.com/problems/find-duplicate-subtrees/
-- [LeetCode] [Hard] Number Of Ways To Reorder Array To Get Same Bst — https://leetcode.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/
 
 ### 2.10 Tree Modifications & Transformations (5 Problems)
 - [LeetCode] [Easy] Invert Binary Tree — https://leetcode.com/problems/invert-binary-tree/
@@ -839,7 +839,16 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [CSES] [Hard] Coin Collector — https://cses.fi/problemset/task/1686
 - [CSES] [Hard] Giant Pizza — https://cses.fi/problemset/task/1684
 
-### 3.12 Functional Graphs & Successor Paths (8 Problems)
+### 3.12 Eulerian Paths & Graph Reconstruction (5 Problems)
+> Degree conditions decide existence; Hierholzer's algorithm builds the path. Reconstruct Itinerary is the interview version and it comes up more often than its obscurity suggests.
+
+- [LeetCode] [Easy] Reconstruct Itinerary — https://leetcode.com/problems/reconstruct-itinerary/
+- [LeetCode] [Easy] Valid Arrangement Of Pairs — https://leetcode.com/problems/valid-arrangement-of-pairs/
+- [CSES] [Medium] Mail Delivery — https://cses.fi/problemset/task/1691
+- [CSES] [Medium] Teleporters Path — https://cses.fi/problemset/task/1693
+- [CSES] [Hard] Hamiltonian Flights — https://cses.fi/problemset/task/1690
+
+### 3.13 Functional Graphs & Successor Paths (8 Problems)
 > Every node has exactly one outgoing edge, so the structure is always 'trees hanging off cycles'. Tortoise-and-hare or binary lifting solves the whole family — and Find the Duplicate Number is this idea hiding in an array.
 
 - [LeetCode] [Easy] Find The Duplicate Number — https://leetcode.com/problems/find-the-duplicate-number/
@@ -850,15 +859,6 @@ This file contains all curated Data Structures and Algorithms (DSA) problems fro
 - [LeetCode] [Medium] Longest Cycle In A Graph — https://leetcode.com/problems/longest-cycle-in-a-graph/
 - [LeetCode] [Medium] Maximum Employees To Be Invited To A Meeting — https://leetcode.com/problems/maximum-employees-to-be-invited-to-a-meeting/
 - [CSES] [Hard] Planets Queries II — https://cses.fi/problemset/task/1160
-
-### 3.13 Eulerian Paths & Graph Reconstruction (5 Problems)
-> Degree conditions decide existence; Hierholzer's algorithm builds the path. Reconstruct Itinerary is the interview version and it comes up more often than its obscurity suggests.
-
-- [LeetCode] [Easy] Reconstruct Itinerary — https://leetcode.com/problems/reconstruct-itinerary/
-- [LeetCode] [Easy] Valid Arrangement Of Pairs — https://leetcode.com/problems/valid-arrangement-of-pairs/
-- [CSES] [Medium] Mail Delivery — https://cses.fi/problemset/task/1691
-- [CSES] [Medium] Teleporters Path — https://cses.fi/problemset/task/1693
-- [CSES] [Hard] Hamiltonian Flights — https://cses.fi/problemset/task/1690
 
 ### 3.14 Max Flow & Bipartite Matching (5 Problems)
 > The last big hammer: model the problem as capacities, run Edmonds-Karp/Dinic, and read the answer off the flow. Rare in product interviews, standard in quant and ICPC-style rounds.
