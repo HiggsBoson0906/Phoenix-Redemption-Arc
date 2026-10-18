@@ -563,12 +563,6 @@ const DSAPage = ({ defaultTab }) => {
 
       <StatsCard statsByDiff={statsByDiff} />
 
-      <ActivityHeatmap
-        solveHistory={solveHistory}
-        isCollapsed={heatmapCollapsed}
-        onToggleCollapse={() => setHeatmapCollapsed((prev) => !prev)}
-      />
-
       <Controls
         search={search}
         setSearch={setSearch}

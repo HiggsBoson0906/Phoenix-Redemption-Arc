@@ -1,0 +1,673 @@
+/* Profile.css — Authentic LeetCode-style profile with Git Bash Terminal aesthetic */
+
+.profile-page {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+  padding: 0 16px;
+}
+
+.profile-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.profile-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-back-btn:hover {
+  background: var(--panel-hover);
+  border-color: var(--accent);
+}
+
+.profile-container {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 16px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Base Card */
+.profile-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease;
+}
+
+/* ── 1. User Overview Card ── */
+.user-overview-card {
+  padding: 24px 28px;
+  background: linear-gradient(135deg, var(--panel) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.user-overview-flex {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.user-avatar-wrap {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+}
+
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.profile-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--accent-glow);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.user-avatar-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #000000;
+  border: 2px solid var(--panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-info-meta {
+  flex: 1;
+  min-width: 260px;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.user-name-row h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-hi);
+  letter-spacing: -0.3px;
+}
+
+.provider-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.provider-pill.google {
+  background: rgba(66, 133, 244, 0.12);
+  border: 1px solid rgba(66, 133, 244, 0.35);
+  color: #58a6ff;
+}
+
+.provider-pill.email {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.provider-pill.both {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+.user-email-text {
+  margin: 4px 0 12px;
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+
+.user-quick-badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.badge-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--panel-active);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.badge-item strong {
+  color: var(--text-hi);
+}
+
+.user-actions-cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.profile-action-btn.primary {
+  background: var(--accent);
+  color: #ffffff;
+  border: 1px solid var(--accent);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.profile-action-btn.primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.profile-action-btn.secondary {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.profile-action-btn.secondary:hover {
+  background: var(--panel-hover);
+  border-color: var(--accent);
+}
+
+/* ── 2. LeetCode Style "Solved Problems" Section ── */
+.leetcode-section-card {
+  padding: 24px 28px;
+}
+
+.leetcode-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.leetcode-header-pre {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.leetcode-section-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-hi);
+  letter-spacing: -0.3px;
+}
+
+.solved-percentage-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--accent-glow);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.leetcode-metrics-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .leetcode-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* LeetCode Donut */
+.leetcode-donut-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--panel-active);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.donut-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-svg {
+  transform: rotate(0deg);
+}
+
+.donut-bg-track {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme='light'] .donut-bg-track {
+  stroke: rgba(0, 0, 0, 0.08);
+}
+
+.donut-arc-easy {
+  stroke: #00b8a3;
+  transition: stroke-dasharray 0.4s ease;
+}
+
+.donut-arc-medium {
+  stroke: #ffc01e;
+  transition: stroke-dasharray 0.4s ease;
+}
+
+.donut-arc-hard {
+  stroke: #ff375f;
+  transition: stroke-dasharray 0.4s ease;
+}
+
+.donut-center-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.donut-count-bold {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-hi);
+  line-height: 1.1;
+  font-family: inherit;
+}
+
+.donut-sub-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+
+.donut-total-dim {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 1px;
+}
+
+.donut-caption {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.donut-caption strong {
+  color: var(--text-hi);
+}
+
+/* LeetCode Difficulty Bars Column */
+.leetcode-bars-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.difficulty-stat-card {
+  padding: 14px 18px;
+  background: var(--panel-active);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.difficulty-stat-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+:root[data-theme='light'] .difficulty-stat-card:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.diff-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.diff-badge {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 5px;
+  letter-spacing: 0.2px;
+}
+
+.diff-badge.easy {
+  color: #00b8a3;
+  background: rgba(0, 184, 163, 0.15);
+}
+
+.diff-badge.medium {
+  color: #ffc01e;
+  background: rgba(255, 192, 30, 0.15);
+}
+
+.diff-badge.hard {
+  color: #ff375f;
+  background: rgba(255, 55, 95, 0.15);
+}
+
+.diff-numbers {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.diff-solved-bold {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-hi);
+}
+
+.diff-total-slash {
+  color: var(--text-dim);
+  font-size: 12.5px;
+}
+
+.diff-percentage {
+  color: var(--text-faint);
+  font-size: 11.5px;
+  margin-left: 2px;
+}
+
+.diff-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+:root[data-theme='light'] .diff-progress-track {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.diff-progress-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
+
+.diff-progress-fill.easy {
+  background: #00b8a3;
+  box-shadow: 0 0 8px rgba(0, 184, 163, 0.4);
+}
+
+.diff-progress-fill.medium {
+  background: #ffc01e;
+  box-shadow: 0 0 8px rgba(255, 192, 30, 0.4);
+}
+
+.diff-progress-fill.hard {
+  background: #ff375f;
+  box-shadow: 0 0 8px rgba(255, 55, 95, 0.4);
+}
+
+/* ── 3. Heatmap Card ── */
+.heatmap-section-card {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.heatmap-section-card .activity-heatmap-card {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
+/* ── 4. Sheets Mastery & Topic Progress ── */
+.sheets-mastery-card {
+  padding: 24px 28px;
+}
+
+.sheets-mastery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sheets-mastery-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-hi);
+}
+
+.sheets-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-active);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.filter-tab-pill {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-tab-pill.active {
+  background: var(--panel);
+  color: var(--text-hi);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sheets-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.sheet-progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--panel-active);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.18s ease;
+}
+
+.sheet-progress-item:hover {
+  border-color: var(--accent);
+  background: var(--panel-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.sheet-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sheet-item-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-hi);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sheet-item-count {
+  font-size: 12px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.sheet-item-count strong {
+  color: var(--text-hi);
+}
+
+.sheet-item-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+:root[data-theme='light'] .sheet-item-track {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.sheet-item-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.sheet-item-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.sheet-item-arrow {
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s ease;
+}
+
+.sheet-progress-item:hover .sheet-item-arrow {
+  transform: translateX(3px);
+  color: var(--accent);
+}

@@ -10,6 +10,7 @@ import {
   X,
   LogOut,
   Settings,
+  User,
   LogIn,
   Sun,
   Moon,
@@ -195,13 +196,13 @@ const Navbar = () => {
                   <button
                     onClick={() => {
                       setMobileOpen(false);
-                      navigate('/settings');
+                      navigate('/profile');
                     }}
                     className="btn-secondary"
                     style={{ padding: '6px 12px', fontSize: 12, gap: 6, flex: 1 }}
                   >
-                    <Settings size={14} />
-                    <span>Settings</span>
+                    <User size={14} />
+                    <span>Profile</span>
                   </button>
 
                   <button
@@ -256,7 +257,11 @@ const Navbar = () => {
         {!loading && (
           isAuthenticated ? (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+              <div
+                onClick={() => navigate('/profile')}
+                style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer' }}
+                title="View Profile & Stats"
+              >
                 {user?.avatar ? (
                   <img
                     src={user.avatar}
@@ -294,7 +299,7 @@ const Navbar = () => {
               </div>
 
               <button
-                onClick={() => navigate('/settings')}
+                onClick={() => navigate('/profile')}
                 className="btn-secondary"
                 style={{
                   padding: '7px 10px',
@@ -303,10 +308,10 @@ const Navbar = () => {
                   alignItems: 'center',
                   cursor: 'pointer'
                 }}
-                title="Settings"
-                aria-label="Settings"
+                title="Profile & Activity"
+                aria-label="Profile & Activity"
               >
-                <Settings size={15} />
+                <User size={15} />
               </button>
 
               <button

@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
+import Profile from './pages/Profile/Profile';
+import ChangePassword from './pages/ChangePassword/ChangePassword';
 import Settings from './pages/Settings/Settings';
 import DSAPage from './pages/DSA/DSAPage';
 import CompanyPrepPage from './pages/CompanyPrep/CompanyPrepPage';
@@ -35,8 +37,15 @@ function App() {
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
 
-          {/* User Settings (Protected) */}
-          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          {/* User Profile with LeetCode stats & Heatmap */}
+          <Route path="/profile" element={<Profile />} />
+
+          {/* Dedicated Security / Password Change (Protected) */}
+          <Route path="/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+          <Route path="/security" element={<Navigate to="/change-password" replace />} />
+
+          {/* Settings Redirect to Profile */}
+          <Route path="/settings" element={<Navigate to="/profile" replace />} />
 
           {/* Fallback redirect to DSA */}
           <Route path="*" element={<Navigate to="/" replace />} />
